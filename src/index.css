@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0a0a0e;
+  --color-panel: #111117;
+  --color-panel-2: #16161e;
+  --color-edge: rgba(255, 255, 255, 0.08);
+  --color-accent: #5b9dff;
+  --color-accent-dim: #3f7fdd;
+
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Segoe UI Mono", Menlo, Consolas, monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: #f4f4f5;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: rgba(91, 157, 255, 0.35);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+/* Subtle blueprint grid, masked so it fades at the edges */
+.grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 35%, black 25%, transparent 75%);
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 35%, black 25%, transparent 75%);
+}
+
+/* Soft radial glow blob */
+.glow {
+  background: radial-gradient(closest-side, rgba(91, 157, 255, 0.16), transparent 70%);
+}
+
+/* Gentle float for hero cards (inner wrapper so framer parallax stays conflict-free) */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-slow {
+  animation: float 7s ease-in-out infinite;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+
+.btn-accent,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.25s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.btn-accent {
+  background-color: var(--color-accent);
+  color: #0a0a0e;
+  box-shadow: 0 0 0 rgba(91, 157, 255, 0);
+}
+
+.btn-accent:hover {
+  background-color: var(--color-accent-dim);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px -8px rgba(91, 157, 255, 0.55);
+}
+
+.btn-accent:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 12px -4px rgba(91, 157, 255, 0.4);
+}
+
+.btn-ghost {
+  border: 1px solid var(--color-edge);
+  background-color: var(--color-panel);
+  color: #e4e4e7;
+  font-weight: 500;
+}
+
+.btn-ghost:hover {
+  border-color: rgba(91, 157, 255, 0.5);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.btn-ghost:active {
+  transform: translateY(0);
+}
+
+/* ── Cards ───────────────────────────────────────────────── */
+
+.card-lift {
+  transition:
+    transform 0.25s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.card-lift:hover {
+  transform: translateY(-3px);
+  border-color: rgba(91, 157, 255, 0.5);
+  box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.7);
+}
+
+/* Konami easter egg: thin animated gradient frame */
+@keyframes egg-border {
+  to {
+    background-position: 300% 0;
+  }
+}
+
+.egg-mode::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(90deg, #ff5f6d, #ffc371, #5b9dff, #a855f7, #ff5f6d) border-box;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  background-size: 300% 100%;
+  animation: egg-border 1.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .egg-mode::after {
+    animation: none;
+  }
+}
