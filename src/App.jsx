@@ -10,6 +10,7 @@ import Contact from "./components/Contact";
 import CurrentlyBuilding from "./components/CurrentlyBuilding";
 import Cursor from "./components/Cursor";
 import Doctrine from "./components/Doctrine";
+import EmbroiderySection from "./components/EmbroiderySection";
 import EmbroideryThread from "./components/EmbroideryThread";
 import Footer from "./components/Footer";
 import FullscreenViewer from "./components/FullscreenViewer";
@@ -25,11 +26,9 @@ import OceanDecor from "./components/OceanDecor";
 import FeatherDecor from "./components/FeatherDecor";
 import ProjectModal from "./components/ProjectModal";
 import Projects from "./components/Projects";
-import ProfileSection from "./components/ProfileSection";
 import ScrollProgress from "./components/ScrollProgress";
 import Skills from "./components/Skills";
 import SmoothScroll from "./components/SmoothScroll";
-import StickFigureDecor from "./components/StickFigureDecor";
 import ThemeSwitcher from "./components/ThemeSwitcher";
 import TransitionCurtain from "./components/TransitionCurtain";
 import WhatIBuild from "./components/WhatIBuild";
@@ -136,7 +135,6 @@ export default function App() {
       {theme === "hell" && <HellDecor />}
       {theme === "ocean" && <OceanDecor />}
       <EmbroideryThread />
-      <StickFigureDecor />
       <SmoothScroll />
       <ScrollProgress />
       <Cursor />
@@ -148,7 +146,7 @@ export default function App() {
         <Hero />
         <Marquee items={tickerItems} />
         <Manifesto />
-        <ProfileSection />
+        <EmbroiderySection />
         <About />
         <WhatIBuild />
         <Projects
