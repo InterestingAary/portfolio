@@ -10,6 +10,7 @@ import Contact from "./components/Contact";
 import CurrentlyBuilding from "./components/CurrentlyBuilding";
 import Cursor from "./components/Cursor";
 import Doctrine from "./components/Doctrine";
+import EmbroideryThread from "./components/EmbroideryThread";
 import Footer from "./components/Footer";
 import FullscreenViewer from "./components/FullscreenViewer";
 import HellDecor from "./components/HellDecor";
@@ -28,6 +29,7 @@ import ProfileSection from "./components/ProfileSection";
 import ScrollProgress from "./components/ScrollProgress";
 import Skills from "./components/Skills";
 import SmoothScroll from "./components/SmoothScroll";
+import StickFigureDecor from "./components/StickFigureDecor";
 import ThemeSwitcher from "./components/ThemeSwitcher";
 import TransitionCurtain from "./components/TransitionCurtain";
 import WhatIBuild from "./components/WhatIBuild";
@@ -121,7 +123,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen text-zinc-100 antialiased">
+    <div className="relative min-h-screen text-zinc-100 antialiased">
       <a
         href="#main"
         className="sr-only z-[110] rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-ink focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
@@ -133,6 +135,8 @@ export default function App() {
       {theme === "heavenly" && <FeatherDecor />}
       {theme === "hell" && <HellDecor />}
       {theme === "ocean" && <OceanDecor />}
+      <EmbroideryThread />
+      <StickFigureDecor />
       <SmoothScroll />
       <ScrollProgress />
       <Cursor />

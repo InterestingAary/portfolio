@@ -1147,3 +1147,143 @@ html[data-theme="ocean"] body::before {
     background-position: 0 -260px;
   }
 }
+
+/* ── Embroidery thread (left edge) ──────────────────────── */
+
+.embroidery-base {
+  background: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-fg) 16%, transparent) 0 5px,
+    transparent 5px 11px
+  );
+}
+
+.embroidery-form {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-accent) 45%, transparent) 0,
+    var(--color-accent) 90%
+  );
+  box-shadow: 0 0 8px color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
+
+.embroidery-needle {
+  animation: needle-sway 3.4s ease-in-out infinite;
+  transform-origin: 50% 15%;
+}
+
+@keyframes needle-sway {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(-9deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(9deg);
+  }
+}
+
+.embroidery-motif {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 35%, transparent));
+}
+
+/* ── Stick figures (runner + sitter) ────────────────────── */
+
+.runner-bob {
+  animation: runner-bob 0.42s ease-in-out infinite;
+}
+
+@keyframes runner-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.runner-arm-a {
+  animation: swing-a 0.42s ease-in-out infinite;
+}
+.runner-arm-b {
+  animation: swing-b 0.42s ease-in-out infinite;
+}
+.runner-leg-a {
+  animation: swing-a 0.42s ease-in-out infinite;
+}
+.runner-leg-b {
+  animation: swing-b 0.42s ease-in-out infinite;
+}
+
+@keyframes swing-a {
+  0%,
+  100% {
+    transform: rotate(-28deg);
+  }
+  50% {
+    transform: rotate(28deg);
+  }
+}
+
+@keyframes swing-b {
+  0%,
+  100% {
+    transform: rotate(28deg);
+  }
+  50% {
+    transform: rotate(-28deg);
+  }
+}
+
+.sitter-leg-a {
+  animation: leg-swing 2.6s ease-in-out infinite;
+  transform-origin: 26px 28px;
+}
+.sitter-leg-b {
+  animation: leg-swing-b 2.6s ease-in-out infinite;
+  transform-origin: 26px 28px;
+}
+
+@keyframes leg-swing {
+  0%,
+  100% {
+    transform: rotate(4deg);
+  }
+  50% {
+    transform: rotate(-6deg);
+  }
+}
+
+@keyframes leg-swing-b {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+}
+
+.sitter-arm-wave {
+  animation: arm-wave 2.8s ease-in-out infinite;
+  transform-origin: 26px 33px;
+}
+
+@keyframes arm-wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(-16deg);
+  }
+  30% {
+    transform: rotate(0deg);
+  }
+  45% {
+    transform: rotate(-16deg);
+  }
+  60% {
+    transform: rotate(0deg);
+  }
+}
