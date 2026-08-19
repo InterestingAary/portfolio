@@ -76,6 +76,7 @@ export default function Achievements() {
           eyebrow="Achievements"
           title="Proof of work — so far."
           description="A short, factual list of things that actually happened. The list is young, and that's fine."
+          chapter="04"
         />
 
         <div className="mt-14 grid gap-5 md:grid-cols-2">

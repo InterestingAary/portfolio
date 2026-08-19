@@ -18,8 +18,9 @@ export const projects = [
     oneLiner: "Hackathon-winning rural safety & assistance platform for farmers and fishermen.",
     accent: "#5b9dff",
     glyph: "RG",
-    // Drop a real screenshot at public/assets/projects/rural-guards.png
+    // Live demo embedded in the card — a screenshot is not needed.
     image: "assets/projects/rural-guards.png",
+    embed: "demos/rural-guards/index.html",
     achievement: "1st Place — Open Innovation · Srujana 2026",
 
     overview:
@@ -84,8 +85,9 @@ links: {
     oneLiner: "A personalized, shareable birthday web experience built as my first publicly deployed website.",
     accent: "#7aa7f7",
     glyph: "BW",
-    // Drop a real screenshot at public/assets/projects/birthday-wishes.png
+    // Live demo embedded in the card — a screenshot is not needed.
     image: "assets/projects/birthday-wishes.png",
+    embed: "demos/birthday-wishes/index.html",
     milestone: "First public deployment",
 
     overview:
@@ -119,7 +121,7 @@ links: {
     ],
 
     links: {
-      demo: "", // TODO: add the deployed URL when available
+      demo: "https://interestingaary.github.io/birthday-cake/",
       github: "https://github.com/InterestingAary/birthday-cake", // verified public repo
     },
   },

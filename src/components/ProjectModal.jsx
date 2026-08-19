@@ -77,7 +77,7 @@ export default function ProjectModal({ project, onClose }) {
             <div
               className="relative h-40 shrink-0 overflow-hidden sm:h-48"
               style={{
-                background: `radial-gradient(120% 140% at 15% 0%, ${project.accent}2e 0%, transparent 55%), linear-gradient(180deg, #14141b 0%, #101016 100%)`,
+                background: `radial-gradient(120% 140% at 15% 0%, ${project.accent}2e 0%, transparent 55%), linear-gradient(180deg, var(--color-panel) 0%, var(--color-ink) 100%)`,
               }}
             >
               <div className="grid-bg absolute inset-0" aria-hidden="true" />

@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create a personalized birthday cake surprise and share it with someone special.">
+  <meta name="theme-color" content="#fdf6f1">
+  <title>A Sweet Surprise 🎂</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎂</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       01 · DESIGN TOKENS
+    ============================================================ */
+    :root {
+      --bg: #fdf6f1;
+      --ink: #43292e;
+      --muted: #a08b90;
+      --rose: #f472b6;
+      --rose-deep: #ec4899;
+      --peach: #fb923c;
+      --gold: #f5b95a;
+      --cream: #fffaf6;
+      --line: #ffe4e6;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --shadow: 0 24px 60px rgba(236, 72, 153, 0.12);
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'Inter', system-ui, sans-serif;
+    }
+
+    /* ============================================================
+       02 · BASE
+    ============================================================ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      min-height: 100dvh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(1100px 700px at 85% -10%, #ffe4ee 0%, transparent 60%),
+        radial-gradient(900px 600px at -10% 110%, #fff1dd 0%, transparent 55%),
+        var(--bg);
+    }
+
+    button { font-family: inherit; }
+
+    /* ============================================================
+       03 · TYPOGRAPHY
+    ============================================================ */
+    .kicker {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 18px;
+    }
+
+    .screen h1 {
+      font: 900 clamp(2.1rem, 7.5vw, 3.4rem)/1.12 var(--serif);
+      letter-spacing: -0.01em;
+    }
+
+    .screen h1.gradient {
+      background: linear-gradient(120deg, var(--rose-deep), var(--peach));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .screen .sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin: 16px auto 34px;
+      max-width: 46ch;
+    }
+
+    /* ============================================================
+       04 · BUTTONS
+    ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 15px 30px;
+      border: 0;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), background 0.3s, border-color 0.3s;
+    }
+
+    .btn--primary {
+      background: linear-gradient(120deg, var(--rose), var(--rose-deep));
+      color: #fff;
+      box-shadow: 0 14px 30px rgba(236, 72, 153, 0.32);
+    }
+    .btn--primary:hover { transform: translateY(-2px); box-shadow: 0 20px 40px rgba(236, 72, 153, 0.42); }
+    .btn--primary:active { transform: translateY(0) scale(0.98); }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--rose-deep);
+      border: 1.5px solid #fbcfe8;
+    }
+    .btn--ghost:hover { background: #fff0f6; }
+
+    .btn--soft {
+      background: #fff;
+      color: var(--rose-deep);
+      border: 1.5px solid #fbcfe8;
+      box-shadow: 0 8px 20px rgba(236, 72, 153, 0.12);
+    }
+    .btn--soft:hover { transform: translateY(-2px); }
+
+    /* ============================================================
+       05 · SCREENS & ROUTER
+    ============================================================ */
+    .screen {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      overflow-y: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 56px 20px 72px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(18px) scale(0.985);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease), visibility 0s linear 0.6s;
+    }
+
+    .screen.is-active {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition-delay: 0s;
+    }
+
+    .wrap {
+      width: min(92vw, 620px);
+      margin: auto;
+      text-align: center;
+    }
+
+    .wrap--wide { width: min(92vw, 680px); }
+
+    /* ============================================================
+       06 · PROGRESS STEPS
+    ============================================================ */
+    .steps {
+      position: fixed;
+      top: 26px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 40;
+      display: flex;
+      gap: 34px;
+      list-style: none;
+      transition: opacity 0.4s var(--ease);
+    }
+
+    body[data-screen="intro"] .steps,
+    body[data-screen="create"] .steps,
+    body[data-screen="link"] .steps,
+    body[data-screen="final"] .steps { opacity: 0; pointer-events: none; }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .step__dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #f3d1dd;
+      transition: all 0.4s var(--ease);
+    }
+
+    .step.is-current { color: var(--rose-deep); }
+    .step.is-current .step__dot { background: var(--rose); box-shadow: 0 0 0 4px #ffe4ee; }
+    .step.is-done .step__dot { background: var(--rose-deep); }
+
+    /* ============================================================
+       07 · CREATOR FORM
+    ============================================================ */
+    .form-cat {
+      display: block;
+      width: 84px;
+      height: 84px;
+      margin: 0 auto 8px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #fff;
+      box-shadow: 0 12px 26px rgba(236, 72, 153, 0.22);
+    }
+
+    .form-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 34px 30px;
+      box-shadow: var(--shadow);
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    .field { margin-bottom: 20px; }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 8px;
+    }
+
+    .input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--ink);
+      font: 500 15px var(--sans);
+      transition: border-color 0.25s, box-shadow 0.25s;
+      resize: vertical;
+    }
+
+    .input::placeholder { color: #d4bcc4; }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--rose);
+      box-shadow: 0 0 0 4px #ffe4ee;
+    }
+
+    .field__error {
+      display: none;
+      color: #e11d48;
+      font-size: 12.5px;
+      font-weight: 600;
+      margin-top: 7px;
+    }
+
+    .field.has-error .input { border-color: #fda4af; box-shadow: 0 0 0 4px #ffe4ee; }
+    .field.has-error .field__error { display: block; }
+
+    .field-hint {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .promise-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .promise-remove {
+      flex: none;
+      width: 44px;
+      border: 1.5px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      border-radius: 12px;
+      font-size: 19px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .promise-remove:hover { color: #e11d48; border-color: #fda4af; background: #fff5f5; }
+
+    .form-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 26px;
+    }
+
+    /* ============================================================
+       08 · LINK READY
+    ============================================================ */
+    .link-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff7fb;
+      border: 1.5px dashed #f9a8d4;
+      border-radius: 16px;
+      padding: 8px 8px 8px 16px;
+      margin: 8px 0 22px;
+    }
+
+    .link-box input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      font: 600 12.5px var(--sans);
+      color: var(--rose-deep);
+      padding: 12px 4px;
+    }
+
+    .link-box input:focus { outline: none; }
+
+    .share-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 24px 0 10px;
+    }
+
+    .share-row .btn { padding: 13px 22px; font-size: 14px; }
+
+    .link-back {
+      display: inline-block;
+      margin-top: 16px;
+      background: none;
+      border: 0;
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .link-back:hover { color: var(--rose-deep); }
+
+    /* ============================================================
+       09 · INTRO
+    ============================================================ */
+    .hero-cat {
+      display: block;
+      width: clamp(110px, 22vw, 150px);
+      height: clamp(110px, 22vw, 150px);
+      margin: 0 auto 24px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #fff;
+      box-shadow: 0 16px 40px rgba(236, 72, 153, 0.25);
+      animation: bob 3s ease-in-out infinite;
+    }
+
+    .hero-emoji {
+      display: block;
+      font-size: clamp(56px, 14vw, 84px);
+      margin-bottom: 20px;
+      animation: bob 3s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    /* ============================================================
+       10 · KNIFE PICKER
+    ============================================================ */
+    .knife-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 36px 0 32px;
+    }
+
+    .knife-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 24px 12px 18px;
+      background: #fff;
+      border: 2px solid var(--line);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s var(--ease);
+    }
+
+    .knife-card svg { width: 54px; height: 46px; }
+
+    .knife-card b { font-size: 14.5px; }
+    .knife-card small { font-size: 12px; color: var(--muted); line-height: 1.45; }
+
+    .knife-card:hover {
+      transform: translateY(-3px);
+      border-color: #fbcfe8;
+      box-shadow: 0 12px 26px rgba(236, 72, 153, 0.12);
+    }
+
+    .knife-card.is-selected {
+      border-color: var(--rose);
+      background: linear-gradient(180deg, #fff, #fff0f6);
+      box-shadow: 0 14px 30px rgba(236, 72, 153, 0.18);
+    }
+
+    .knife-card.is-selected svg { transform: translateY(-2px) rotate(-8deg); }
+    .knife-card.is-selected b { color: var(--rose-deep); }
+
+    .knife-card.is-selected::after {
+      content: '✓';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--rose-deep);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ============================================================
+       11 · CAKE SCREEN
+    ============================================================ */
+    .stage {
+      background: linear-gradient(180deg, #fff8f3, #ffefec);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: 46px 20px 26px;
+      box-shadow: var(--shadow);
+      margin-top: 8px;
+    }
+
+    .cake {
+      position: relative;
+      width: min(84vw, 360px);
+      margin: 0 auto;
+    }
+
+    .cake__candles {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% - 46px);
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      gap: 14px;
+    }
+
+    .cake__mound {
+      position: relative;
+      z-index: 2;
+      height: 46px;
+      background: linear-gradient(180deg, #fff8fb, #ffe9f1);
+      border-radius: 50% 50% 10px 10px;
+      box-shadow: inset 0 -6px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .cake__mound::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      height: 12px;
+      background: radial-gradient(circle at 10px 0, #ffe9f1 10px, transparent 11px);
+      background-size: 22px 14px;
+      background-repeat: repeat-x;
+    }
+
+    .cake__mound::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 8px 10px, #f59e0b 1.7px, transparent 2.4px),
+        radial-gradient(circle at 24px 20px, #ec4899 1.5px, transparent 2.2px),
+        radial-gradient(circle at 34px 8px, #34d399 1.7px, transparent 2.4px),
+        radial-gradient(circle at 46px 18px, #60a5fa 1.5px, transparent 2.2px),
+        radial-gradient(circle at 58px 12px, #c084fc 1.6px, transparent 2.3px);
+      background-size: 64px 30px;
+      background-repeat: repeat;
+    }
+
+    .cake__body {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      height: 190px;
+      overflow: hidden;
+      border-radius: 4px 4px 16px 16px;
+      box-shadow: inset 0 -12px 18px rgba(0, 0, 0, 0.06), 0 10px 24px rgba(210, 120, 150, 0.18);
+    }
+
+    .cake__plate {
+      position: relative;
+      z-index: 0;
+      height: 15px;
+      margin-top: -3px;
+      background: linear-gradient(180deg, #fff, #f4e7ec);
+      border-radius: 12px;
+      box-shadow: 0 16px 34px rgba(190, 100, 130, 0.28);
+    }
+
+    .slice {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      border-left: 1px solid rgba(255, 255, 255, 0.6);
+      background: linear-gradient(180deg, var(--c1), var(--c2));
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.65s var(--ease), opacity 0.65s var(--ease), filter 0.2s;
+    }
+
+    .slice:first-child { border-left: 0; }
+    .slice:hover { filter: brightness(1.05); }
+    .slice:focus-visible { outline: 3px solid var(--rose); outline-offset: -3px; }
+
+    .slice.is-cut {
+      transform: translateY(160px) rotate(8deg);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Candles */
+    .candle {
+      position: relative;
+      width: 13px;
+      height: 34px;
+      border-radius: 3px 3px 5px 5px;
+      background: repeating-linear-gradient(90deg, var(--c, #f472b6) 0 5px, #fff 5px 10px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      transition: transform 0.3s var(--ease);
+    }
+
+    .candle:hover { transform: translateY(-3px); }
+
+    .candle::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: -6px;
+      width: 2px;
+      height: 7px;
+      background: #5b4034;
+      transform: translateX(-50%);
+      border-radius: 1px;
+    }
+
+    .candle__flame {
+      position: absolute;
+      left: 50%;
+      bottom: 100%;
+      width: 11px;
+      height: 16px;
+      background: radial-gradient(circle at 50% 78%, #fffbe6 0 22%, #ffcf6b 55%, #ff8f2e 100%);
+      border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
+      transform: translateX(-50%);
+      transform-origin: 50% 100%;
+      filter: drop-shadow(0 0 7px rgba(255, 170, 60, 0.85));
+      animation: flick 0.16s infinite alternate ease-in-out;
+    }
+
+    @keyframes flick {
+      from { transform: translateX(-50%) scale(1) rotate(-3deg); }
+      to { transform: translateX(-50%) scale(1.12) rotate(3deg); }
+    }
+
+    .candle__smoke {
+      position: absolute;
+      left: 50%;
+      bottom: 100%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(140, 140, 150, 0.35);
+      opacity: 0;
+    }
+
+    .candle.is-out .candle__flame {
+      animation: none;
+      transform: translateX(-50%) scale(0);
+      opacity: 0;
+      transition: transform 0.3s var(--ease), opacity 0.3s;
+    }
+
+    .candle.is-out .candle__smoke { animation: smoke 1.4s ease-out forwards; }
+
+    @keyframes smoke {
+      0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); }
+      25% { opacity: 0.8; }
+      100% { opacity: 0; transform: translate(-50%, -34px) scale(1.8); }
+    }
+
+    /* Tools row */
+    .cake-tools {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .pill {
+      background: #fff;
+      border: 1.5px solid var(--line);
+      color: var(--rose-deep);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 999px;
+      box-shadow: 0 8px 18px rgba(236, 72, 153, 0.1);
+    }
+
+    .pill.pop { animation: pop 0.35s var(--ease); }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.14); }
+      100% { transform: scale(1); }
+    }
+
+    /* ============================================================
+       12 · CELEBRATION & FINAL
+    ============================================================ */
+    .message {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 26px 28px;
+      margin: 0 auto 26px;
+      max-width: 46ch;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.75;
+      box-shadow: 0 16px 40px rgba(236, 72, 153, 0.08);
+    }
+
+    .final-cats {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin: 34px 0 30px;
+    }
+
+    .cat-img {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #fff;
+      box-shadow: 0 10px 22px rgba(236, 72, 153, 0.2);
+      animation: hop 1.5s var(--ease) infinite;
+    }
+
+    @keyframes hop {
+      0%, 100% { transform: translateY(0); }
+      35% { transform: translateY(-16px); }
+    }
+
+    /* The letter */
+    .letter {
+      background: linear-gradient(180deg, #fff, #fff7fb);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 30px 30px 26px;
+      margin: 0 auto 28px;
+      max-width: 52ch;
+      text-align: left;
+      box-shadow: 0 16px 40px rgba(236, 72, 153, 0.08);
+    }
+
+    .letter__wish {
+      font: 700 1.35rem/1.5 var(--serif);
+      color: var(--ink);
+      margin-bottom: 18px;
+    }
+
+    .letter__promises { list-style: none; margin: 0 0 18px; }
+
+    .letter__promises li {
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.7;
+      padding-left: 28px;
+      position: relative;
+      margin-bottom: 6px;
+    }
+
+    .letter__promises li::before {
+      content: '❤️';
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-size: 14px;
+    }
+
+    .letter__note {
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .letter__sign {
+      font: 700 1.05rem var(--serif);
+      color: var(--rose-deep);
+      text-align: right;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 6px 0 24px;
+    }
+
+    .heart-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 30px 0 10px;
+      font-size: 30px;
+    }
+
+    .heart-row span { animation: pulse-h 1.6s ease-in-out infinite; }
+    .heart-row span:nth-child(2n) { animation-delay: 0.2s; }
+    .heart-row span:nth-child(3n) { animation-delay: 0.4s; }
+
+    @keyframes pulse-h {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.25); }
+    }
+
+    .footnote {
+      margin-top: 42px;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    /* ============================================================
+       13 · EFFECTS LAYER & TOASTS
+    ============================================================ */
+    #fxLayer {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .fx-confetti {
+      position: absolute;
+      top: -16px;
+      left: var(--x, 50%);
+      width: var(--w, 8px);
+      height: var(--h, 12px);
+      background: var(--c, #f472b6);
+      border-radius: var(--r, 2px);
+      animation: fx-fall var(--d, 3s) linear var(--delay, 0s) forwards;
+    }
+
+    @keyframes fx-fall {
+      to { transform: translateY(115vh) rotate(760deg); }
+    }
+
+    .fx-heart {
+      position: absolute;
+      bottom: -40px;
+      left: var(--x, 50%);
+      animation: fx-up var(--d, 3s) ease-in forwards;
+    }
+
+    @keyframes fx-up {
+      0% { transform: translateY(0) scale(0.8) rotate(-8deg); opacity: 0; }
+      12% { opacity: 1; }
+      100% { transform: translateY(-112vh) scale(1.1) rotate(10deg); opacity: 0; }
+    }
+
+    #toastWrap {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--ink);
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 999px;
+      opacity: 0;
+      transform: translateY(10px) scale(0.96);
+      transition: all 0.35s var(--ease);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+      white-space: nowrap;
+    }
+
+    .toast.is-show { opacity: 1; transform: none; }
+
+    /* ============================================================
+       14 · KNIFE CURSOR
+    ============================================================ */
+    body.knife-active,
+    body.knife-active * { cursor: var(--knife-cursor, auto) !important; }
+
+    /* ============================================================
+       15 · RESPONSIVE & REDUCED MOTION
+    ============================================================ */
+    @media (max-width: 480px) {
+      .knife-grid { grid-template-columns: 1fr; gap: 10px; }
+      .knife-card { flex-direction: row; padding: 14px 18px; gap: 14px; text-align: left; }
+      .knife-card svg { width: 44px; height: 38px; }
+      .steps { gap: 22px; }
+      .cake__candles { gap: 10px; }
+      .form-card { padding: 26px 20px; }
+      .link-box { flex-wrap: wrap; padding: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body data-screen="create">
+
+  <ol class="steps" aria-hidden="true">
+    <li class="step" data-step="knife"><span class="step__dot"></span><span class="step__label">Knife</span></li>
+    <li class="step" data-step="cake"><span class="step__dot"></span><span class="step__label">Cake</span></li>
+    <li class="step" data-step="celebrate"><span class="step__dot"></span><span class="step__label">Love</span></li>
+  </ol>
+
+  <!-- ============ SENDER · CREATE ============ -->
+  <section class="screen is-active" id="screen-create" aria-hidden="false">
+    <div class="wrap wrap--wide">
+      <img src="cat.webp" alt="" class="form-cat">
+      <span class="kicker">A gift made by you</span>
+      <h1>Create a birthday surprise</h1>
+      <p class="sub">Write a few kind words, and we&rsquo;ll wrap them into a shareable link — the person you love opens it and gets a whole celebration.</p>
+
+      <form class="form-card" id="giftForm" novalidate>
+        <div class="field" id="fldTo">
+          <label for="inTo">🎁 Who is this for?</label>
+          <input class="input" id="inTo" name="to" type="text" maxlength="40" placeholder="e.g. Sarah" autocomplete="off">
+          <p class="field__error">Please tell us who this is for.</p>
+        </div>
+
+        <div class="field" id="fldFrom">
+          <label for="inFrom">💌 Who is it from?</label>
+          <input class="input" id="inFrom" name="from" type="text" maxlength="40" placeholder="e.g. Alex" autocomplete="off">
+          <p class="field__error">Please add your name.</p>
+        </div>
+
+        <div class="field" id="fldWish">
+          <label for="inWish">🕯️ Your wish for them</label>
+          <textarea class="input" id="inWish" name="wish" maxlength="160" rows="3" placeholder="e.g. May this year bring you all the joy you give to everyone else…"></textarea>
+          <span class="field-hint" id="wishCount">0 / 160</span>
+          <p class="field__error">A birthday wish is the heart of this gift.</p>
+        </div>
+
+        <div class="field" id="fldPromises">
+          <label>🤝 Promises you make to them</label>
+          <div id="promiseList"></div>
+          <button type="button" class="btn btn--ghost" id="addPromiseBtn" style="padding: 11px 18px; font-size: 13.5px;">+ Add a promise</button>
+        </div>
+
+        <div class="field" id="fldNote">
+          <label for="inNote">📝 A note</label>
+          <textarea class="input" id="inNote" name="note" maxlength="300" rows="3" placeholder="Anything else you want to say…"></textarea>
+          <span class="field-hint" id="noteCount">0 / 300</span>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn--primary" id="generateBtn">Create their gift ✨</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ SENDER · LINK READY ============ -->
+  <section class="screen" id="screen-link" aria-hidden="true">
+    <div class="wrap">
+      <span class="hero-emoji" aria-hidden="true">🎁</span>
+      <span class="kicker">Your gift is ready</span>
+      <h1>One link. One big surprise.</h1>
+      <p class="sub">Send this link to <b id="linkRecipient">your special someone</b> — when they open it, the whole celebration begins.</p>
+
+      <div class="link-box">
+        <input id="linkBox" type="text" readonly aria-label="Your gift link">
+        <button type="button" class="btn btn--primary" id="copyBtn" style="padding: 11px 20px; font-size: 13.5px;">Copy 📋</button>
+      </div>
+
+      <div class="share-row">
+        <button type="button" class="btn btn--soft" id="waBtn">WhatsApp</button>
+        <button type="button" class="btn btn--soft" id="tgBtn">Telegram</button>
+        <button type="button" class="btn btn--soft" id="previewBtn">Preview as them 👀</button>
+      </div>
+
+      <button type="button" class="link-back" id="editBtn">← Edit the details</button>
+    </div>
+  </section>
+
+  <!-- ============ RECEIVER · INTRO ============ -->
+  <section class="screen" id="screen-intro" aria-hidden="true">
+    <div class="wrap">
+      <img src="cat.webp" alt="The birthday cat" class="hero-cat">
+      <span class="kicker">A birthday surprise from <span id="introFrom">someone who loves you</span></span>
+      <h1 class="gradient">Today is all about <span id="introTo">you</span>!</h1>
+      <p class="sub">This little celebration was made just for you. Let&rsquo;s begin.</p>
+      <button type="button" class="btn btn--primary" id="startBtn">Start the celebration 🎉</button>
+    </div>
+  </section>
+
+  <!-- ============ RECEIVER · KNIFE PICKER ============ -->
+  <section class="screen" id="screen-knife" aria-hidden="true">
+    <div class="wrap">
+      <span class="kicker">Step 1 of 3 · Choose your blade</span>
+      <h1>Pick the perfect knife</h1>
+      <p class="sub">Your choice decides how we cut this cake. Go on — pick your favorite.</p>
+
+      <div class="knife-grid">
+        <button type="button" class="knife-card" data-knife="silver" aria-pressed="false">
+          <svg viewBox="0 0 54 46" aria-hidden="true">
+            <defs>
+              <linearGradient id="blade-silver" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0" stop-color="#f8f8f8"/><stop offset="1" stop-color="#c8c8c8"/>
+              </linearGradient>
+            </defs>
+            <path d="M27 42 Q27 18 39 6 L47 1 Q50 4 47 10 L44 16 Q38 22 27 42 Z" fill="url(#blade-silver)"/>
+            <rect x="19" y="40" width="15" height="14" rx="4" fill="#8d939b"/>
+          </svg>
+          <b>Classic Silver</b>
+          <small>Clean, sharp and dependable.</small>
+        </button>
+
+        <button type="button" class="knife-card" data-knife="gold" aria-pressed="false">
+          <svg viewBox="0 0 54 46" aria-hidden="true">
+            <defs>
+              <linearGradient id="blade-gold" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0" stop-color="#fdf6d8"/><stop offset="1" stop-color="#e2c04f"/>
+              </linearGradient>
+            </defs>
+            <path d="M27 42 Q27 18 39 6 L47 1 Q50 4 47 10 L44 16 Q38 22 27 42 Z" fill="url(#blade-gold)"/>
+            <rect x="19" y="40" width="15" height="14" rx="4" fill="#b8860b"/>
+          </svg>
+          <b>Golden Glow</b>
+          <small>For a touch of celebration.</small>
+        </button>
+
+        <button type="button" class="knife-card" data-knife="pink" aria-pressed="false">
+          <svg viewBox="0 0 54 46" aria-hidden="true">
+            <defs>
+              <linearGradient id="blade-pink" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0" stop-color="#fff0f6"/><stop offset="1" stop-color="#ec9cc4"/>
+              </linearGradient>
+            </defs>
+            <path d="M27 42 Q27 18 39 6 L47 1 Q50 4 47 10 L44 16 Q38 22 27 42 Z" fill="url(#blade-pink)"/>
+            <rect x="19" y="40" width="15" height="14" rx="4" fill="#ec4899"/>
+          </svg>
+          <b>Rosy Pink</b>
+          <small>Sweet and full of charm.</small>
+        </button>
+      </div>
+
+      <button type="button" class="btn btn--primary" id="cutBtn">Cut the cake →</button>
+    </div>
+  </section>
+
+  <!-- ============ RECEIVER · CAKE ============ -->
+  <section class="screen" id="screen-cake" aria-hidden="true">
+    <div class="wrap">
+      <span class="kicker"><span id="cakeTo">Your</span> cake · Step 2 of 3</span>
+      <h1>Serve the birthday cake</h1>
+      <p class="sub">Tap a slice to serve it, and blow out the candles when you&rsquo;re ready to make a wish.</p>
+
+      <div class="stage">
+        <div class="cake">
+          <div class="cake__candles" id="candles"></div>
+          <div class="cake__mound"></div>
+          <div class="cake__body" id="cakeBody"></div>
+          <div class="cake__plate"></div>
+        </div>
+      </div>
+
+      <div class="cake-tools">
+        <span class="pill" id="servedPill">0 / 8 served</span>
+        <button type="button" class="btn btn--ghost" id="nextSliceBtn">Serve next slice</button>
+        <button type="button" class="btn btn--soft" id="blowBtn">💨 Blow out the candles</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RECEIVER · CELEBRATION ============ -->
+  <section class="screen" id="screen-celebrate" aria-hidden="true">
+    <div class="wrap">
+      <span class="kicker">Step 3 of 3 · Wish granted</span>
+      <h1 class="gradient">Happy Birthday, <span id="celebrateTo">you</span>!</h1>
+      <p class="sub">Every slice was made for you — and the candles heard every single wish.</p>
+
+      <div class="final-cats" aria-hidden="true">
+        <img src="cat.webp" alt="" class="cat-img">
+      </div>
+
+      <button type="button" class="btn btn--primary" id="surpriseBtn">See your surprise 💌</button>
+    </div>
+  </section>
+
+  <!-- ============ RECEIVER · FINAL / LETTER ============ -->
+  <section class="screen" id="screen-final" aria-hidden="true">
+    <div class="wrap">
+      <span class="hero-emoji" aria-hidden="true">💖</span>
+      <span class="kicker">The grand finale</span>
+      <h1 class="gradient">You&rsquo;re so special</h1>
+      <p class="sub">Today is all about you — and every moment of it was worth it.</p>
+
+      <div class="letter" id="letter">
+        <p class="letter__wish" id="letterWish"></p>
+        <ul class="letter__promises" id="letterPromises" hidden></ul>
+        <p class="letter__note" id="letterNote" hidden></p>
+        <p class="letter__sign">With love, <span id="letterFrom"></span> 💖</p>
+      </div>
+
+      <div class="stats">
+        <span class="pill">🍰 8 slices served</span>
+        <span class="pill">🕯️ 5 wishes made</span>
+      </div>
+
+      <div class="heart-row" aria-hidden="true">
+        <span>💗</span><span>💖</span><span>💕</span><span>💗</span><span>💖</span>
+      </div>
+
+      <button type="button" class="btn btn--primary" id="restartBtn">Celebrate again 🔄</button>
+      <p class="footnote">Made with 💖 for someone special</p>
+    </div>
+  </section>
+
+  <div id="fxLayer" aria-hidden="true"></div>
+  <div id="toastWrap" aria-hidden="true"></div>
+
+  <script>
+    'use strict';
+
+    /* ============================================================
+       01 · HELPERS & DATA
+    ============================================================ */
+    const $ = (sel, root = document) => root.querySelector(sel);
+    const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+    const rand = (min, max) => Math.random() * (max - min) + min;
+
+    const KNIVES = {
+      silver: { handle: '#8d939b' },
+      gold:   { handle: '#b8860b' },
+      pink:   { handle: '#ec4899' },
+    };
+
+    const SLICE_COLORS = [
+      ['#ffd9e6', '#ffc9d9'],
+      ['#ffe9c4', '#ffd9a3'],
+      ['#d9f2de', '#bfe8cd'],
+      ['#d2e9fb', '#b9dcf5'],
+      ['#e4d9f7', '#d3c3f0'],
+      ['#ffd1c7', '#ffc0b3'],
+      ['#f9d0ef', '#f2bfe6'],
+      ['#ffd3d3', '#ffbdbd'],
+    ];
+
+    const CANDLE_COLORS = ['#ff6b6b', '#4ea8ff', '#ffd166', '#9b5de5', '#06d6a0'];
+
+    const MAX = { to: 40, from: 40, wish: 160, note: 300, promise: 60, promises: 5 };
+
+    /* ============================================================
+       02 · GIFT ENCODING (everything lives in the URL hash)
+    ============================================================ */
+    function encodeGift(gift) {
+      const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(gift))));
+      return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    function decodeGift(enc) {
+      let b64 = enc.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      const gift = JSON.parse(decodeURIComponent(escape(atob(b64))));
+      if (typeof gift.to !== 'string' || typeof gift.from !== 'string' || typeof gift.wish !== 'string') return null;
+      gift.promises = Array.isArray(gift.promises) ? gift.promises.filter((p) => typeof p === 'string') : [];
+      gift.note = typeof gift.note === 'string' ? gift.note : '';
+      return gift;
+    }
+
+    function readGiftFromUrl() {
+      const raw = location.hash.replace(/^#/, '');
+      if (!raw) return null;
+      try { return decodeGift(raw); } catch (err) { return null; }
+    }
+
+    function giftUrl(gift) {
+      return location.href.split('#')[0] + '#' + encodeGift(gift);
+    }
+
+    /* ============================================================
+       03 · STATE
+    ============================================================ */
+    const App = {
+      gift: { to: '', from: '', wish: '', promises: [], note: '' },
+      isReceiver: false,
+      state: { screen: null, knife: 'silver', served: 0, lit: 5 },
+      celebrating: false,
+
+      /* ============================================================
+         04 · PAGE ROUTER
+      ============================================================ */
+      goTo(name) {
+        this.state.screen = name;
+        document.body.dataset.screen = name;
+
+        $$('.screen').forEach((s) => {
+          const active = s.id === `screen-${name}`;
+          s.classList.toggle('is-active', active);
+          s.setAttribute('aria-hidden', String(!active));
+        });
+
+        const order = ['knife', 'cake', 'celebrate'];
+        const idx = order.indexOf(name);
+        $$('.step').forEach((st, i) => {
+          st.classList.toggle('is-current', i === idx);
+          st.classList.toggle('is-done', i < idx);
+        });
+
+        document.body.classList.toggle('knife-active', name === 'knife' || name === 'cake');
+
+        if (name === 'celebrate') this.fx.hearts(18);
+        if (name === 'final') this.fx.hearts(22);
+      },
+
+      /* ============================================================
+         05 · SENDER · CREATOR FORM
+      ============================================================ */
+      initForm() {
+        $('#giftForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.generate();
+        });
+
+        $('#addPromiseBtn').addEventListener('click', () => this.addPromiseRow());
+
+        $('#inWish').addEventListener('input', (e) => {
+          $('#wishCount').textContent = `${e.target.value.length} / ${MAX.wish}`;
+        });
+
+        $('#inNote').addEventListener('input', (e) => {
+          $('#noteCount').textContent = `${e.target.value.length} / ${MAX.note}`;
+        });
+      },
+
+      addPromiseRow() {
+        const list = $('#promiseList');
+        if (list.children.length >= MAX.promises) {
+          this.toast(`Up to ${MAX.promises} promises, no more! 😅`);
+          return;
+        }
+        const row = document.createElement('div');
+        row.className = 'promise-row';
+        row.innerHTML =
+          `<input class="input" type="text" maxlength="${MAX.promise}" placeholder="I promise to…">` +
+          `<button type="button" class="promise-remove" aria-label="Remove promise">×</button>`;
+        row.querySelector('.promise-remove').addEventListener('click', () => row.remove());
+        list.appendChild(row);
+        row.querySelector('input').focus();
+      },
+
+      generate() {
+        const gift = {
+          to: $('#inTo').value.trim(),
+          from: $('#inFrom').value.trim(),
+          wish: $('#inWish').value.trim(),
+          promises: $$('#promiseList .promise-row input').map((i) => i.value.trim()).filter(Boolean),
+          note: $('#inNote').value.trim(),
+        };
+
+        const checks = [
+          ['fldTo', gift.to, 'Please tell us who this is for.'],
+          ['fldFrom', gift.from, 'Please add your name.'],
+          ['fldWish', gift.wish, 'A birthday wish is the heart of this gift.'],
+        ];
+
+        let firstBad = null;
+        checks.forEach(([id, val]) => {
+          const bad = val.length === 0;
+          $('#' + id).classList.toggle('has-error', bad);
+          if (bad && !firstBad) firstBad = id;
+        });
+
+        if (firstBad) {
+          $('#' + firstBad).querySelector('input, textarea').focus();
+          this.toast('A couple of details are missing 🧐');
+          return;
+        }
+
+        this.gift = gift;
+        const url = giftUrl(gift);
+        $('#linkBox').value = url;
+        $('#linkRecipient').textContent = gift.to;
+        this.goTo('link');
+      },
+
+      /* ============================================================
+         06 · SENDER · LINK SHARING
+      ============================================================ */
+      initSharing() {
+        $('#copyBtn').addEventListener('click', () => this.copyLink());
+        $('#waBtn').addEventListener('click', () => this.shareVia('whatsapp'));
+        $('#tgBtn').addEventListener('click', () => this.shareVia('telegram'));
+        $('#previewBtn').addEventListener('click', () => {
+          location.hash = encodeGift(this.gift);
+          location.reload();
+        });
+        $('#editBtn').addEventListener('click', () => this.goTo('create'));
+      },
+
+      copyLink() {
+        const link = $('#linkBox').value;
+        const done = () => this.toast('Link copied 📋');
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(link).then(done).catch(() => this.fallbackCopy(link, done));
+        } else {
+          this.fallbackCopy(link, done);
+        }
+      },
+
+      fallbackCopy(text, done) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); } catch (err) { this.toast('Could not copy — long-press the link instead'); }
+        ta.remove();
+      },
+
+      shareVia(network) {
+        const link = $('#linkBox').value;
+        const text = `🎂 ${this.gift.from} made a birthday surprise for ${this.gift.to} — open it here:`;
+        const url = network === 'whatsapp'
+          ? `https://wa.me/?text=${encodeURIComponent(text + ' ' + link)}`
+          : `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`;
+        window.open(url, '_blank', 'noopener');
+      },
+
+      /* ============================================================
+         07 · RECEIVER · PERSONALIZATION
+      ============================================================ */
+      applyPersonalization() {
+        const g = this.gift;
+        $('#introFrom').textContent = g.from;
+        $('#introTo').textContent = g.to;
+        $('#cakeTo').textContent = `${g.to}'s`;
+        $('#celebrateTo').textContent = g.to;
+        $('#letterFrom').textContent = g.from;
+        $('#letterWish').textContent = `“${g.wish}”`;
+
+        const list = $('#letterPromises');
+        list.innerHTML = '';
+        g.promises.forEach((p) => {
+          const li = document.createElement('li');
+          li.textContent = p;
+          list.appendChild(li);
+        });
+        list.hidden = g.promises.length === 0;
+
+        const note = $('#letterNote');
+        note.textContent = g.note;
+        note.hidden = g.note.length === 0;
+
+        document.title = `${g.to}'s Birthday Surprise 🎂`;
+      },
+
+      /* ============================================================
+         08 · KNIFE
+      ============================================================ */
+      pickKnife(name) {
+        this.state.knife = name;
+        $$('.knife-card').forEach((c) => {
+          const on = c.dataset.knife === name;
+          c.classList.toggle('is-selected', on);
+          c.setAttribute('aria-pressed', String(on));
+        });
+        this.applyCursor();
+      },
+
+      applyCursor() {
+        const handle = KNIVES[this.state.knife].handle;
+        const svg =
+          `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="40" viewBox="0 0 36 40">` +
+          `<defs><linearGradient id="kb" x1="0" y1="1" x2="0" y2="0">` +
+          `<stop offset="0" stop-color="#f8f8f8"/><stop offset="1" stop-color="#c8c8c8"/>` +
+          `</linearGradient></defs>` +
+          `<rect x="13" y="28" width="10" height="11" rx="3" fill="${handle}"/>` +
+          `<path d="M18 28 Q18 12 26 4 L31 1 Q33 3 31 7 L29 11 Q25 15 18 28 Z" fill="url(#kb)"/>` +
+          `</svg>`;
+        document.body.style.setProperty(
+          '--knife-cursor',
+          `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}") 18 6, auto`
+        );
+      },
+
+      /* ============================================================
+         09 · CAKE
+      ============================================================ */
+      buildCake() {
+        const body = $('#cakeBody');
+        body.innerHTML = '';
+
+        SLICE_COLORS.forEach(([c1, c2], i) => {
+          const s = document.createElement('button');
+          s.type = 'button';
+          s.className = 'slice';
+          s.style.setProperty('--c1', c1);
+          s.style.setProperty('--c2', c2);
+          s.setAttribute('aria-label', `Serve slice ${i + 1}`);
+          s.addEventListener('click', () => this.serveSlice(s, i));
+          body.appendChild(s);
+        });
+
+        const wrap = $('#candles');
+        wrap.innerHTML = '';
+        CANDLE_COLORS.forEach((c) => {
+          const candle = document.createElement('div');
+          candle.className = 'candle';
+          candle.style.setProperty('--c', c);
+          candle.innerHTML = '<span class="candle__flame"></span><span class="candle__smoke"></span>';
+          candle.addEventListener('click', () => this.blowCandle(candle));
+          wrap.appendChild(candle);
+        });
+
+        this.state.served = 0;
+        this.state.lit = CANDLE_COLORS.length;
+        this.celebrating = false;
+        this.updateCounter();
+      },
+
+      updateCounter() {
+        const pill = $('#servedPill');
+        pill.textContent = `${this.state.served} / 8 served`;
+        pill.classList.remove('pop');
+        void pill.offsetWidth;
+        pill.classList.add('pop');
+      },
+
+      serveSlice(el, index) {
+        if (el.classList.contains('is-cut')) return;
+        el.classList.add('is-cut');
+        this.state.served++;
+        this.updateCounter();
+        this.toast(`Slice ${index + 1} served 🍰`);
+        window.setTimeout(() => el.remove(), 700);
+        if (this.state.served === SLICE_COLORS.length) {
+          window.setTimeout(() => this.celebrate(), 750);
+        }
+      },
+
+      serveNext() {
+        const next = $$('.slice').find((s) => !s.classList.contains('is-cut'));
+        if (next) {
+          next.click();
+        } else {
+          this.toast('All slices served! 🎉');
+        }
+      },
+
+      /* ============================================================
+         10 · CANDLES
+      ============================================================ */
+      blowCandle(candle) {
+        if (candle.classList.contains('is-out')) return;
+        candle.classList.add('is-out');
+        this.state.lit--;
+        if (this.state.lit === 0) this.toast('Wish made! 🕯️');
+      },
+
+      blowAll() {
+        $$('.candle').forEach((c, i) => {
+          window.setTimeout(() => this.blowCandle(c), i * 90);
+        });
+      },
+
+      /* ============================================================
+         11 · CELEBRATION & RESTART
+      ============================================================ */
+      celebrate() {
+        if (this.celebrating) return;
+        this.celebrating = true;
+        this.blowAll();
+        this.fx.confetti(130);
+        this.goTo('celebrate');
+      },
+
+      restart() {
+        this.buildCake();
+        this.pickKnife('silver');
+        this.goTo('intro');
+        this.toast('A fresh start ✨');
+      },
+
+      /* ============================================================
+         12 · EFFECTS
+      ============================================================ */
+      fx: {
+        confetti(n) {
+          const wrap = $('#fxLayer');
+          wrap.innerHTML = '';
+          const colors = ['#f472b6', '#fb7185', '#fbbf24', '#34d399', '#60a5fa', '#c084fc', '#fff'];
+          for (let i = 0; i < n; i++) {
+            const p = document.createElement('i');
+            p.className = 'fx-confetti';
+            p.style.left = `${rand(0, 100)}vw`;
+            p.style.setProperty('--w', `${rand(6, 13)}px`);
+            p.style.setProperty('--h', `${rand(8, 16)}px`);
+            p.style.setProperty('--c', colors[(Math.random() * colors.length) | 0]);
+            p.style.setProperty('--r', Math.random() < 0.3 ? '50%' : '2px');
+            p.style.setProperty('--d', `${rand(2.4, 4.6)}s`);
+            p.style.setProperty('--delay', `${rand(0, 0.8)}s`);
+            wrap.appendChild(p);
+          }
+        },
+
+        hearts(n) {
+          const wrap = $('#fxLayer');
+          const emojis = ['❤️', '💗', '💖', '💕', '✨'];
+          for (let i = 0; i < n; i++) {
+            const h = document.createElement('i');
+            h.className = 'fx-heart';
+            h.textContent = emojis[(Math.random() * emojis.length) | 0];
+            h.style.left = `${rand(0, 100)}vw`;
+            h.style.fontSize = `${rand(14, 36)}px`;
+            h.style.setProperty('--d', `${rand(2.8, 5.2)}s`);
+            wrap.appendChild(h);
+          }
+        },
+      },
+
+      /* ============================================================
+         13 · TOASTS
+      ============================================================ */
+      toast(msg) {
+        const el = document.createElement('div');
+        el.className = 'toast';
+        el.textContent = msg;
+        $('#toastWrap').appendChild(el);
+        window.setTimeout(() => el.classList.add('is-show'), 10);
+        window.setTimeout(() => {
+          el.classList.remove('is-show');
+          window.setTimeout(() => el.remove(), 400);
+        }, 2100);
+      },
+
+      /* ============================================================
+         14 · INIT
+      ============================================================ */
+      init() {
+        this.buildCake();
+        this.pickKnife('silver');
+        this.initForm();
+        this.initSharing();
+
+        $('#startBtn').addEventListener('click', () => this.goTo('knife'));
+        $$('.knife-card').forEach((c) => c.addEventListener('click', () => this.pickKnife(c.dataset.knife)));
+        $('#cutBtn').addEventListener('click', () => this.goTo('cake'));
+        $('#nextSliceBtn').addEventListener('click', () => this.serveNext());
+        $('#blowBtn').addEventListener('click', () => this.blowAll());
+        $('#surpriseBtn').addEventListener('click', () => this.goTo('final'));
+        $('#restartBtn').addEventListener('click', () => this.restart());
+
+        const data = readGiftFromUrl();
+        if (data) {
+          this.isReceiver = true;
+          this.gift = data;
+          this.applyPersonalization();
+          this.goTo('intro');
+        } else {
+          this.isReceiver = false;
+          this.goTo('create');
+        }
+      },
+    };
+
+    App.init();
+  </script>
+</body>
+</html>

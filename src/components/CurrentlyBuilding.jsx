@@ -12,18 +12,24 @@ const items = [
 
 export default function CurrentlyBuilding() {
   return (
-    <section className="relative py-28 md:py-32">
+    <section id="now" className="relative py-28 md:py-32">
       <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
         <SectionHeading
           eyebrow="Currently building"
           title="A living roadmap."
           description="A live snapshot of what I'm exploring and building right now."
+          chapter="08"
         />
 
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((c, i) => (
             <Reveal key={c.title} delay={i * 0.06}>
-              <div className="card-lift group flex h-full items-start gap-4 rounded-2xl border border-edge bg-panel p-6">
+              <div
+                className={`card-lift group relative flex h-full items-start gap-4 rounded-2xl border border-edge bg-panel p-6 ${
+                  i % 2 === 0 ? "-rotate-[0.4deg]" : "rotate-[0.5deg]"
+                }`}
+              >
+                <span className={`tape ${i % 3 === 0 ? "tape-amber" : i % 3 === 1 ? "tape-blue" : "tape"}`} aria-hidden="true" />
                 <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-edge bg-ink text-accent">
                   <c.icon className="h-5 w-5" aria-hidden="true" />
                   <span

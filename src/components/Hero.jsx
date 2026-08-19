@@ -1,12 +1,16 @@
+import { Fragment, useRef } from "react";
 import {
   motion,
   useMotionValue,
+  useMotionValueEvent,
   useReducedMotion,
+  useScroll,
   useSpring,
   useTransform,
 } from "framer-motion";
 import { ArrowRight, Gamepad2, Rocket, Trophy } from "lucide-react";
 import { GitHubIcon } from "./icons";
+import Metaball from "./Metaball";
 import { profile } from "../data/profile";
 
 const container = {
@@ -19,13 +23,15 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] } },
 };
 
+const STAGES = ["01 / WHOAMI", "02 / BUILD", "03 / CONTEXT", "04 / ACTION"];
+
 const floatingCards = [
   {
     name: "Rural Guards",
     chip: "🏆 WINNER",
     chipCls: "bg-accent/10 text-accent border-accent/30",
     tech: "node.js · leaflet · twilio",
-    pos: "left-0 top-14 w-60 -rotate-3 md:w-64",
+    pos: "left-1 top-28 w-60 -rotate-3 md:w-64",
     depth: 28,
     z: 20,
   },
@@ -34,7 +40,7 @@ const floatingCards = [
     chip: "● LIVE",
     chipCls: "bg-emerald-400/10 text-emerald-300 border-emerald-400/25",
     tech: "html · css · js",
-    pos: "right-0 top-0 w-52 rotate-2 md:w-56",
+    pos: "right-0 top-2 w-52 rotate-2 md:w-56",
     depth: 18,
     z: 10,
   },
@@ -43,7 +49,7 @@ const floatingCards = [
     chip: "IN DEV",
     chipCls: "bg-amber-400/10 text-amber-300 border-amber-400/25",
     tech: "building…",
-    pos: "bottom-8 left-8 w-48 rotate-1 md:w-52",
+    pos: "bottom-10 left-12 w-48 rotate-1 md:w-52",
     depth: 38,
     z: 30,
   },
@@ -84,6 +90,10 @@ export default function Hero() {
   const sx = useSpring(mx, { stiffness: 50, damping: 18 });
   const sy = useSpring(my, { stiffness: 50, damping: 18 });
 
+  // Magnetic pull for the primary CTA
+  const btnX = useSpring(0, { stiffness: 220, damping: 16 });
+  const btnY = useSpring(0, { stiffness: 220, damping: 16 });
+
   const onMouseMove = (e) => {
     if (reduce) return;
     const r = e.currentTarget.getBoundingClientRect();
@@ -91,129 +101,262 @@ export default function Hero() {
     my.set((e.clientY - r.top) / r.height - 0.5);
   };
 
+  const onCtaMove = (e) => {
+    if (reduce) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    btnX.set((e.clientX - r.left - r.width / 2) * 0.18);
+    btnY.set((e.clientY - r.top - r.height / 2) * 0.18);
+  };
+
+  const onCtaLeave = () => {
+    btnX.set(0);
+    btnY.set(0);
+  };
+
+  // Scroll-driven scrollytelling stage: the hero pins for 300vh and
+  // plays four acts as the reader scrolls, then zooms out and releases.
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Act 1 -> 2: "whoami" pulls up and out, "I build with it." takes over
+  const act1Op = useTransform(scrollYProgress, [0.14, 0.3], [1, 0]);
+  const act1Y = useTransform(scrollYProgress, [0.14, 0.3], [0, -60]);
+  const act2Op = useTransform(scrollYProgress, [0.18, 0.34], [0, 1]);
+  const act2Y = useTransform(scrollYProgress, [0.18, 0.34], [44, 0]);
+
+  // Act 3: tagline + highlights rise in
+  const tagOp = useTransform(scrollYProgress, [0.4, 0.56], [0, 1]);
+  const tagY = useTransform(scrollYProgress, [0.4, 0.56], [32, 0]);
+
+  // Act 4: floating cards sweep in, CTAs rise
+  const cardsOp = useTransform(scrollYProgress, [0.6, 0.76], [0, 1]);
+  const cardsX = useTransform(scrollYProgress, [0.6, 0.76], [90, 0]);
+  const ctaOp = useTransform(scrollYProgress, [0.6, 0.78], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.6, 0.78], [24, 0]);
+
+  // Ambient reactions while scrolling
+  const blobScale = useTransform(scrollYProgress, [0.18, 0.5], [1, 1.35]);
+
+  // Exit: the whole stage tilts and zooms out as it releases the pin
+  const gridY = useTransform(scrollYProgress, [0, 1], [0, -30]);
+  const exitRotate = useTransform(scrollYProgress, [0.84, 1], [0, -3.5]);
+  const exitScale = useTransform(scrollYProgress, [0.84, 1], [1, 0.93]);
+  const exitY = useTransform(scrollYProgress, [0.84, 1], [0, 70]);
+  const exitOp = useTransform(scrollYProgress, [0.88, 1], [1, 0]);
+
+  const scrollOp = useTransform(scrollYProgress, [0.12, 0.22], [1, 0]);
+  const tickerOp = useTransform(scrollYProgress, [0.85, 1], [1, 0]);
+
+  const gridMotionStyle = reduce ? undefined : { y: gridY };
+
+  // Act ticker: bottom-left label + progress dots updated via DOM refs
+  const labelRef = useRef(null);
+  const dotRefs = useRef([]);
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    const idx = Math.min(STAGES.length - 1, Math.floor(v * STAGES.length));
+    if (labelRef.current) labelRef.current.textContent = STAGES[idx];
+    dotRefs.current.forEach((d, i) => {
+      if (d) {
+        d.style.backgroundColor = i <= idx ? "var(--color-accent)" : "rgba(255,255,255,0.18)";
+      }
+    });
+  });
+
+  const lineOne = ["I", "don't", "just", "learn", "technology."];
+  const lineTwo = ["I", "build", "with", "it."];
+
   return (
     <section
+      ref={heroRef}
       id="top"
-      className="relative flex min-h-screen items-center overflow-hidden"
-      onMouseMove={onMouseMove}
+      className="relative"
+      style={reduce ? undefined : { height: "300vh" }}
     >
-      <div className="grid-bg absolute inset-0" aria-hidden="true" />
-      <div className="glow absolute -top-32 left-1/2 h-[520px] w-[820px] -translate-x-1/2 blur-2xl" aria-hidden="true" />
-      <div className="absolute right-[-15%] top-1/3 h-[420px] w-[420px] rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
-
-      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-16 px-6 pb-24 pt-32 md:px-10 lg:grid-cols-[1.15fr_0.85fr] lg:pb-28 lg:pt-36">
-        <motion.div variants={container} initial={reduce ? false : "hidden"} animate="show">
-          <motion.div variants={item}>
-            <span className="inline-flex items-center gap-2 rounded-full border border-edge bg-panel px-3.5 py-1.5 text-xs text-zinc-400">
-              <span className="relative flex h-2 w-2" aria-hidden="true">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-              </span>
-              {profile.status}
-            </span>
-          </motion.div>
-
-          <motion.p
-            variants={item}
-            className="mt-8 font-mono text-xs font-semibold uppercase tracking-[0.35em] text-accent md:text-sm"
-          >
-            Aaryan Mittal
-          </motion.p>
-          <motion.p
-            variants={item}
-            className="mt-2 font-mono text-[11px] uppercase tracking-[0.25em] text-zinc-500"
-          >
-            Developer · Builder · Creator
-          </motion.p>
-
-          <h1 className="mt-6 font-display font-bold leading-[0.98] tracking-tight">
-            <motion.span
-              variants={item}
-              className="block text-[clamp(2.2rem,5.8vw,4.25rem)] text-zinc-100"
-            >
-              I don't just learn
-            </motion.span>
-            <motion.span
-              variants={item}
-              className="block text-[clamp(2.2rem,5.8vw,4.25rem)] text-zinc-100"
-            >
-              technology.
-            </motion.span>
-            <motion.span
-              variants={item}
-              className="block text-[clamp(2.2rem,5.8vw,4.25rem)] text-accent"
-            >
-              I build with it.
-            </motion.span>
-          </h1>
-
-          <motion.p variants={item} className="mt-8 max-w-xl text-lg font-medium text-zinc-200 md:text-xl">
-            {profile.tagline}
-          </motion.p>
-
-          <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-4">
-            <a
-              href="#work"
-              className="btn-accent"
-            >
-              Explore My Work
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </a>
-            {profile.links.github && (
-              <a
-                href={profile.links.github}
-                target="_blank"
-                rel="noreferrer"
-                className="btn-ghost"
-              >
-                <GitHubIcon className="h-4 w-4" /> GitHub
-              </a>
-            )}
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 px-4 py-3 text-sm font-medium text-zinc-300 transition-colors hover:text-white"
-            >
-              Contact Me
-            </a>
-          </motion.div>
-
-          <motion.ul
-            variants={item}
-            aria-label="Highlights"
-            className="mt-10 flex flex-wrap items-center gap-2 lg:hidden"
-          >
-            <li className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 text-xs font-semibold text-accent">
-              <Trophy className="h-3.5 w-3.5" aria-hidden="true" /> Hackathon Winner
-            </li>
-            <li className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-semibold text-emerald-300">
-              <Rocket className="h-3.5 w-3.5" aria-hidden="true" /> First Ship
-            </li>
-            <li className="inline-flex items-center gap-1.5 rounded-full border border-edge bg-panel px-3 py-1.5 text-xs font-semibold text-zinc-300">
-              <Gamepad2 className="h-3.5 w-3.5" aria-hidden="true" /> Game Dev
-            </li>
-          </motion.ul>
+      <motion.div
+        style={reduce ? undefined : { rotate: exitRotate, scale: exitScale, y: exitY, opacity: exitOp }}
+        className={
+          reduce
+            ? "relative flex min-h-screen items-center overflow-hidden"
+            : "relative flex min-h-screen items-center overflow-hidden md:sticky md:top-0 md:h-screen"
+        }
+        onMouseMove={onMouseMove}
+      >
+        <div className="grid-bg absolute inset-0" aria-hidden="true" />
+        <motion.div className="absolute inset-0" style={reduce ? undefined : { scale: blobScale }}>
+          <Metaball className="opacity-70" />
         </motion.div>
 
-        {!reduce && (
+        <motion.div
+          style={gridMotionStyle}
+          className="relative mx-auto grid w-full max-w-6xl items-center gap-16 px-6 pb-24 pt-32 md:px-10 lg:grid-cols-[1.15fr_0.85fr] lg:pb-28 lg:pt-36"
+        >
+          <motion.div variants={container} initial={reduce ? false : "hidden"} animate="show">
+            <motion.div
+              style={reduce ? undefined : { opacity: act1Op, y: act1Y }}
+              className="origin-top"
+            >
+              <motion.div variants={item}>
+                <span className="inline-flex items-center gap-2 rounded-full border border-edge bg-panel px-3.5 py-1.5 text-xs text-zinc-400">
+                  <span className="relative flex h-2 w-2" aria-hidden="true">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                  </span>
+                  {profile.status}
+                </span>
+              </motion.div>
+
+              <motion.div variants={item} className="mt-8 flex items-center gap-3">
+                <span className="h-px w-8 bg-accent/50" aria-hidden="true" />
+                <p className="font-mono text-sm text-zinc-400">
+                  <span className="text-accent">$</span> whoami
+                  <span className="blink ml-1 inline-block h-4 w-2 translate-y-0.5 bg-accent" aria-hidden="true" />
+                </p>
+              </motion.div>
+
+              <h1 className="mt-6 font-display font-bold leading-[0.98] tracking-tight">
+                <motion.span
+                  style={reduce ? undefined : { opacity: act1Op, y: act1Y }}
+                  className="block text-[clamp(2.2rem,5.8vw,4.25rem)] text-zinc-100"
+                >
+                  {lineOne.map((w, i) => (
+                    <Fragment key={`${w}-${i}`}>
+                      <motion.span
+                        variants={item}
+                        className={`inline-block ${w === "technology." ? "text-outline" : ""}`}
+                      >
+                        {w}
+                      </motion.span>{" "}
+                    </Fragment>
+                  ))}
+                </motion.span>
+                <motion.span
+                  style={reduce ? undefined : { opacity: act2Op, y: act2Y }}
+                  className="block text-[clamp(2.2rem,5.8vw,4.25rem)]"
+                >
+                  {lineTwo.map((w, i) => (
+                    <Fragment key={`${w}-${i}`}>
+                      <motion.span
+                        variants={item}
+                        className={`inline-block ${w === "build" ? "font-serif italic text-accent" : "text-zinc-100"}`}
+                      >
+                        {w}
+                      </motion.span>{" "}
+                    </Fragment>
+                  ))}
+                </motion.span>
+              </h1>
+            </motion.div>
+
+            <motion.div style={reduce ? undefined : { opacity: tagOp, y: tagY }}>
+              <motion.p variants={item} className="mt-8 max-w-xl text-lg font-medium text-zinc-200 md:text-xl">
+                {profile.tagline
+                  .split("turning ideas into working projects")
+                  .flatMap((part, i, arr) =>
+                    i === arr.length - 1
+                      ? [part]
+                      : [
+                          part,
+                          <mark key={i} className="line text-zinc-100">
+                            turning ideas into working projects
+                          </mark>,
+                        ],
+                  )}
+              </motion.p>
+
+              <motion.ul
+                variants={item}
+                aria-label="Highlights"
+                className="mt-10 flex flex-wrap items-center gap-2 lg:hidden"
+              >
+                <li className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-3 py-1.5 text-xs font-semibold text-accent">
+                  <Trophy className="h-3.5 w-3.5" aria-hidden="true" /> Hackathon Winner
+                </li>
+                <li className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-semibold text-emerald-300">
+                  <Rocket className="h-3.5 w-3.5" aria-hidden="true" /> First Ship
+                </li>
+                <li className="inline-flex items-center gap-1.5 rounded-full border border-edge bg-panel px-3 py-1.5 text-xs font-semibold text-zinc-300">
+                  <Gamepad2 className="h-3.5 w-3.5" aria-hidden="true" /> Game Dev
+                </li>
+              </motion.ul>
+            </motion.div>
+
+            <motion.div style={reduce ? undefined : { opacity: ctaOp, y: ctaY }}>
+              <motion.div variants={item} className="mt-10 flex flex-wrap items-center gap-4">
+                <motion.a
+                  href="#work"
+                  className="btn-accent"
+                  style={reduce ? undefined : { x: btnX, y: btnY }}
+                  onMouseMove={onCtaMove}
+                  onMouseLeave={onCtaLeave}
+                >
+                  Explore My Work
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 hover:translate-x-0.5" />
+                </motion.a>
+                {profile.links.github && (
+                  <a
+                    href={profile.links.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-ghost"
+                  >
+                    <GitHubIcon className="h-4 w-4" /> GitHub
+                  </a>
+                )}
+                <a
+                  href="#contact"
+                  className="inline-flex items-center gap-2 px-4 py-3 text-sm font-medium text-zinc-300 transition-colors hover:text-white"
+                >
+                  Contact Me
+                </a>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+
           <motion.div
             aria-hidden="true"
             className="relative hidden h-[440px] select-none lg:block"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
+            style={reduce ? undefined : { opacity: cardsOp, x: cardsX }}
           >
-            <div className="glow absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 blur-xl" />
             {floatingCards.map((c) => (
               <ParallaxCard key={c.name} card={c} mx={sx} my={sy} />
             ))}
           </motion.div>
-        )}
-      </div>
+        </motion.div>
 
-      <div className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex">
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-600">scroll</span>
-        <span className="h-10 w-px animate-pulse bg-gradient-to-b from-accent/60 to-transparent" />
-      </div>
+        <motion.div
+          className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex [@media(max-height:780px)]:hidden"
+          style={reduce ? undefined : { opacity: scrollOp }}
+        >
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-600">scroll</span>
+          <span className="h-10 w-px animate-pulse bg-gradient-to-b from-accent/60 to-transparent" />
+        </motion.div>
+
+        {!reduce && (
+          <motion.div
+            className="absolute bottom-8 left-6 z-30 flex items-center gap-3"
+            style={{ opacity: tickerOp }}
+          >
+            <span ref={labelRef} className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+              01 / WHOAMI
+            </span>
+            <span className="flex items-center gap-1">
+              {STAGES.map((_, i) => (
+                <span
+                  key={i}
+                  ref={(el) => {
+                    dotRefs.current[i] = el;
+                  }}
+                  className="h-1 w-5 rounded-full"
+                  style={{ backgroundColor: i === 0 ? "var(--color-accent)" : "rgba(255,255,255,0.18)" }}
+                />
+              ))}
+            </span>
+          </motion.div>
+        )}
+      </motion.div>
     </section>
   );
 }

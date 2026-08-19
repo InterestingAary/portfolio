@@ -97,6 +97,7 @@ export default function CodeSection() {
           eyebrow="Open source / code"
           title="Work in public."
           description="Straight from my GitHub — no inflated stats, just code."
+          chapter="09"
         />
 
         <div className="mt-14 grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">

@@ -26,12 +26,13 @@ export default function BeyondCode() {
   if (visible.length === 0) return null;
 
   return (
-    <section className="relative py-28 md:py-32">
+    <section id="beyond" className="relative py-28 md:py-32">
       <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
         <SectionHeading
           eyebrow="Beyond code"
           title="Also, I make content."
           description="A smaller side of the story — gaming and vlogging, when I'm not building."
+          chapter="10"
         />
 
         <div className="mt-12 grid max-w-3xl gap-5 sm:grid-cols-2">

@@ -6,7 +6,10 @@ export default function Footer() {
     <footer className="border-t border-edge">
       <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-6 py-10 text-center text-xs text-zinc-500 md:flex-row md:px-10 md:text-left">
         <p className="font-display font-semibold text-zinc-400">{profile.name}</p>
-        <p>Built with curiosity, caffeine &amp; code.</p>
+        <p>
+          Built with curiosity, caffeine &amp; code.
+          <span className="blink text-accent" aria-hidden="true">_</span>
+        </p>
         <div className="flex items-center gap-4">
           <span>© 2026 {profile.name}</span>
           <a

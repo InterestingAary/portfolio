@@ -12,6 +12,7 @@ function ProjectVisual({ project, featured }) {
   }, [project.id]);
 
   const showImage = project.image && !imageFailed;
+  const showEmbed = Boolean(project.embed);
 
   return (
     <div className={`relative overflow-hidden ${height}`}>
@@ -19,10 +20,19 @@ function ProjectVisual({ project, featured }) {
         className="absolute inset-0"
         aria-hidden="true"
         style={{
-          background: `radial-gradient(120% 140% at 15% 0%, ${project.accent}26 0%, transparent 55%), linear-gradient(180deg, #14141b 0%, #101016 100%)`,
+          background: `radial-gradient(120% 140% at 15% 0%, ${project.accent}26 0%, transparent 55%), linear-gradient(180deg, var(--color-panel) 0%, var(--color-ink) 100%)`,
         }}
       />
-      {showImage && (
+      {showEmbed && (
+        <iframe
+          src={project.embed}
+          title={`${project.name} — live demo`}
+          allow="geolocation; microphone; autoplay; clipboard-write; fullscreen"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals"
+          className="absolute inset-0 z-20 h-full w-full border-0 bg-panel"
+        />
+      )}
+      {!showEmbed && showImage && (
         <img
           src={project.image}
           alt={`${project.name} — project screenshot`}
@@ -31,7 +41,7 @@ function ProjectVisual({ project, featured }) {
           className="absolute inset-0 h-full w-full object-cover object-top transition-all duration-500 group-hover:scale-[1.03] group-hover:brightness-110"
         />
       )}
-      {!showImage && (
+      {!showEmbed && !showImage && (
         <div className="relative flex h-full w-full flex-col">
           {/* browser-chrome style frame to suggest a screenshot slot */}
           <div className="flex items-center gap-1.5 border-b border-edge/60 px-4 py-2.5">
@@ -54,17 +64,17 @@ function ProjectVisual({ project, featured }) {
         </div>
       )}
 
-      <div className="absolute left-4 top-4">
+      <div className="pointer-events-none absolute left-4 top-4 z-30">
         <span className="rounded-full border border-edge bg-ink/80 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-400 backdrop-blur">
           {project.category}
         </span>
       </div>
-      <div className="absolute right-4 top-4">
+      <div className="pointer-events-none absolute right-4 top-4 z-30">
         <StatusChip status={project.status} className="bg-ink/80 backdrop-blur" />
       </div>
 
       {project.achievement && (
-        <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 bg-gradient-to-t from-black/85 via-black/60 to-transparent px-4 pb-3 pt-8">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex items-center gap-2 bg-gradient-to-t from-black/85 via-black/60 to-transparent px-4 pb-3 pt-8">
           <Trophy className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
           <span className="text-xs font-bold uppercase tracking-wide text-accent">
             {project.achievement}
@@ -73,7 +83,7 @@ function ProjectVisual({ project, featured }) {
       )}
 
       {project.milestone && !project.achievement && (
-        <div className="absolute bottom-3 left-4">
+        <div className="pointer-events-none absolute bottom-3 left-4 z-30">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-300 backdrop-blur">
             <Rocket className="h-3 w-3" aria-hidden="true" />
             {project.milestone}
@@ -88,9 +98,16 @@ export default function ProjectCard({ project, onOpen, featured = false }) {
   const techCount = featured ? 6 : 4;
   const hasLinks = Boolean(project.links.demo || project.links.github);
 
+  const onMove = (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+  };
+
   return (
     <article
-      className={`card-lift group relative flex h-full flex-col overflow-hidden rounded-2xl border border-edge bg-panel ${
+      onMouseMove={onMove}
+      className={`card-lift spotlight-card group relative flex h-full flex-col overflow-hidden rounded-2xl border border-edge bg-panel ${
         featured ? "lg:min-h-[480px]" : ""
       }`}
     >
@@ -103,7 +120,14 @@ export default function ProjectCard({ project, onOpen, featured = false }) {
 
       <ProjectVisual project={project} featured={featured} />
 
-      <div className="flex flex-1 flex-col p-6">
+      <div className="relative flex flex-1 flex-col p-6">
+        <div
+          className="pointer-events-none absolute inset-0"
+          aria-hidden="true"
+          style={{
+            background: `radial-gradient(460px circle at var(--mx, 50%) var(--my, 50%), ${project.accent}14, transparent 55%)`,
+          }}
+        />
         <div className="flex items-center justify-between gap-3">
           <h4 className="font-display text-xl font-bold text-zinc-100">{project.name}</h4>
           {featured && (
@@ -115,11 +139,12 @@ export default function ProjectCard({ project, onOpen, featured = false }) {
         <p className="mt-2 text-sm leading-relaxed text-zinc-400">{project.oneLiner}</p>
 
         {project.technologies.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {project.technologies.slice(0, techCount).map((t) => (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {project.technologies.slice(0, techCount).map((t, i) => (
               <span
                 key={t}
-                className="rounded-md border border-edge bg-ink px-2 py-1 font-mono text-[10px] text-zinc-400"
+                style={{ transform: `rotate(${[-1, 1.4, -1.8, 0.8, -0.6, 1.8][i % 6]}deg)` }}
+                className="rounded-md border border-edge bg-ink px-2 py-1 font-mono text-[10px] text-zinc-400 transition-colors hover:border-accent/40 hover:text-zinc-200"
               >
                 {t}
               </span>
@@ -133,8 +158,8 @@ export default function ProjectCard({ project, onOpen, featured = false }) {
         )}
 
         <div className="mt-auto flex items-center justify-between pt-6">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-4 py-2 text-xs font-semibold text-accent transition-colors duration-300 group-hover:bg-accent/20">
-            Case study
+          <span className="inline-flex items-center gap-1.5 rounded-md border border-accent/40 bg-accent/10 px-4 py-2 font-mono text-xs font-bold tracking-wider text-accent transition-colors duration-300 group-hover:bg-accent group-hover:text-ink">
+            [ open case study ]
             <ArrowRight
               className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
               aria-hidden="true"

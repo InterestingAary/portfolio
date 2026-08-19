@@ -17,12 +17,11 @@ export default function About() {
   return (
     <section id="about" className="relative py-28 md:py-36">
       <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
-        <SectionHeading eyebrow="About" title="Learning by building." />
+        <SectionHeading eyebrow="About" title="Learning by building." chapter="01" />
 
         <Reveal delay={0.1} className="mt-10">
           <blockquote className="border-l-2 border-accent pl-6 font-display text-2xl font-bold leading-snug text-zinc-100 md:text-4xl">
-            I learn by
-            <span className="text-accent"> building.</span>
+            I learn by <span className="line">building.</span>
           </blockquote>
         </Reveal>
 
@@ -44,9 +43,10 @@ export default function About() {
                 {pipeline.map((step, i) => (
                   <span key={step} className="flex items-center gap-2">
                     <span
+                      style={{ transform: `rotate(${[-1.4, 1, -0.8, 1.2, 0][i % 5]}deg)` }}
                       className={`rounded-md border px-3 py-1.5 font-mono text-xs font-semibold tracking-wide ${
                         i === pipeline.length - 1
-                          ? "border-accent/40 bg-accent/10 text-accent"
+                          ? "border-accent/60 bg-accent text-ink"
                           : "border-edge bg-panel text-zinc-300"
                       }`}
                     >

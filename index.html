@@ -11,6 +11,21 @@
     <meta name="author" content="Aaryan Mittal" />
     <meta name="theme-color" content="#0a0a0e" />
 
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("portfolio-theme");
+          if (t !== "ocean" && t !== "heavenly" && t !== "hell") t = "nebula";
+          document.documentElement.dataset.theme = t;
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) {
+            meta.content =
+              t === "heavenly" ? "#faf6ec" : t === "hell" ? "#0a0505" : t === "ocean" ? "#051019" : "#0a0a0e";
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Aaryan Mittal" />
@@ -40,7 +55,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&family=Instrument+Serif:ital@0;1&display=swap"
       rel="stylesheet"
     />
 

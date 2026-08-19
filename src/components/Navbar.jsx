@@ -52,6 +52,29 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // Scroll through Lenis when active (it owns smooth scroll); fall back to an
+  // instant jump otherwise. Native smooth scrollIntoView fights Lenis's lerp
+  // and the page gets stuck mid-scroll. Resolve to a numeric position first —
+  // Lenis element targets can undershoot.
+  const scrollToTarget = (href) => {
+    const target = document.querySelector(href);
+    if (!target) return;
+    const pos = target.getBoundingClientRect().top + window.scrollY;
+    if (window.__lenis) {
+      window.__lenis.scrollTo(pos, { duration: 1.2 });
+    } else {
+      window.scrollTo({ top: pos });
+    }
+  };
+
+  const goTop = () => {
+    if (window.__lenis) {
+      window.__lenis.scrollTo(0, { duration: 1.2 });
+    } else {
+      window.scrollTo({ top: 0 });
+    }
+  };
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
@@ -67,12 +90,13 @@ export default function Navbar() {
         <a
           href="#top"
           className="font-display text-lg font-bold tracking-tight text-zinc-100"
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             setOpen(false);
-            setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 50);
+            setTimeout(goTop, 50);
           }}
         >
-          aaryan<span className="text-accent">.</span>mittal
+          aaryan<span className="blink text-accent">.</span>mittal
         </a>
 
         <div className="hidden items-center gap-7 md:flex">
@@ -134,11 +158,10 @@ export default function Navbar() {
                 <a
                   key={l.href}
                   href={l.href}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
                     setOpen(false);
-                    setTimeout(() => {
-                      document.querySelector(l.href)?.scrollIntoView({ behavior: "smooth", block: "start" });
-                    }, 50);
+                    setTimeout(() => scrollToTarget(l.href), 50);
                   }}
                   className="rounded-lg px-3 py-3 font-display text-xl font-semibold text-zinc-200 transition-colors hover:bg-panel hover:text-accent"
                 >

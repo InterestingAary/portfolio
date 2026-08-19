@@ -31,20 +31,23 @@ const categories = [
 
 export default function WhatIBuild() {
   return (
-    <section className="relative py-28 md:py-32">
+    <section id="what-i-build" className="relative py-28 md:py-32">
       <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
         <SectionHeading
           eyebrow="What I build"
           title="Four lanes, one mindset."
           description="I explore across software, games, AI, and security — shipping experiments in each one."
+          chapter="02"
         />
 
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {categories.map((c, i) => (
             <Reveal key={c.title} delay={i * 0.08}>
               <a
                 href={c.href}
-                className="card-lift group relative block h-full overflow-hidden rounded-2xl border border-edge bg-panel p-7"
+                className={`card-lift group relative block h-full overflow-hidden rounded-2xl border border-edge bg-panel p-7 ${
+                  i % 2 === 0 ? "-rotate-[0.5deg]" : "rotate-[0.6deg]"
+                }`}
                 onMouseMove={(e) => {
                   const r = e.currentTarget.getBoundingClientRect();
                   e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
@@ -55,10 +58,16 @@ export default function WhatIBuild() {
                   className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                   style={{
                     background:
-                      "radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(91,157,255,0.10), transparent 65%)",
+                      "radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(214,255,77,0.09), transparent 65%)",
                   }}
                   aria-hidden="true"
                 />
+                <span
+                  className="pointer-events-none absolute right-4 top-3 font-mono text-[10px] font-semibold text-zinc-600"
+                  aria-hidden="true"
+                >
+                  0{i + 1}
+                </span>
                 <div className="relative">
                   <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-edge bg-ink text-accent transition-transform duration-300 group-hover:scale-110">
                     <c.icon className="h-5 w-5" aria-hidden="true" />

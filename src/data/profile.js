@@ -24,19 +24,18 @@ export const profile = {
 
   links: {
     github: "https://github.com/InterestingAary",
-    linkedin: "", // TODO: add when available
-    instagram: "", // TODO: add when available
-    youtube: "https://www.youtube.com/@AryMit-r50", // Gaming channel (primary)
+    linkedin: "https://www.linkedin.com/in/aryan-mittal-3217b9381/",
+    instagram: "https://www.instagram.com/ary.mit",
+    youtube: "https://www.youtube.com/@AryMit-r5o", // Gaming channel
     youtubeVlogs: "https://www.youtube.com/@Arymit_Vlogs", // Vlogging channel
-    email: "", // TODO: add when available
+    email: "interestingaari@gmail.com",
   },
 
   creator: {
     gaming: {
       label: "Gaming",
-      handle: "@AryMit-r50",
-      // TODO: re-add the correct gaming channel URL when available — @AryMit-r50 currently 404s
-      url: "",
+      handle: "@AryMit-r5o",
+      url: "https://www.youtube.com/@AryMit-r5o",
       note: "gaming content",
     },
     vlogs: {

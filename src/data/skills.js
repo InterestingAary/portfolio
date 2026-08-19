@@ -23,8 +23,8 @@ export const currentlyLearning = [
 
 export const dsa = {
   platforms: [
-    { name: "LeetCode", url: "" }, // TODO: add your profile URL
-    { name: "NeetCode", url: "" }, // TODO: add your profile URL
+    { name: "LeetCode", url: "https://leetcode.com/u/Aryan_Mittal12312/" },
+    { name: "NeetCode", url: "https://neetcode.io/user/GrandLuxray263" },
   ],
   // Only list topics you have actually practiced.
   // Suggested once filled in: Arrays, Strings, Hash Maps, Two Pointers,

@@ -1,3 +1,5 @@
+import { useRef } from "react";
+import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import { Activity, Flag, Hammer, Rocket, Sparkles, Terminal, Trophy } from "lucide-react";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
@@ -48,6 +50,14 @@ const steps = [
 ];
 
 export default function Journey() {
+  const reduce = useReducedMotion();
+  const listRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: listRef,
+    offset: ["start 0.75", "end 0.55"],
+  });
+  const scaleY = useSpring(scrollYProgress, { stiffness: 70, damping: 22 });
+
   return (
     <section id="journey" className="relative py-28 md:py-36">
       <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
@@ -55,14 +65,23 @@ export default function Journey() {
           eyebrow="Journey"
           title="A story, not a résumé."
           description="Still early — but the trajectory is real: started, built, competed, won, shipped."
+          chapter="06"
         />
 
         <div className="relative mt-16">
-          <div
-            className="absolute left-[13px] top-1 bottom-1 w-px bg-gradient-to-b from-accent/50 via-edge to-transparent md:left-[15px]"
-            aria-hidden="true"
-          />
-          <ol className="space-y-10">
+          {reduce ? (
+            <div
+              className="absolute left-[13px] top-1 bottom-1 w-px bg-gradient-to-b from-accent/50 via-edge to-transparent md:left-[15px]"
+              aria-hidden="true"
+            />
+          ) : (
+            <motion.div
+              style={{ scaleY, transformOrigin: "top" }}
+              className="absolute left-[13px] top-1 bottom-1 w-px bg-gradient-to-b from-accent/50 via-edge to-transparent md:left-[15px]"
+              aria-hidden="true"
+            />
+          )}
+          <ol ref={listRef} className="space-y-10">
             {steps.map((s, i) => (
               <li key={s.label}>
                 <Reveal delay={i * 0.06} className="flex gap-6">

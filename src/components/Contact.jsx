@@ -1,6 +1,7 @@
 import { Mail } from "lucide-react";
 import { GitHubIcon, InstagramIcon, LinkedInIcon, YouTubeIcon } from "./icons";
 import { profile } from "../data/profile";
+import Metaball from "./Metaball";
 import Reveal from "./Reveal";
 
 const socials = [
@@ -16,7 +17,7 @@ export default function Contact() {
 
   return (
     <section id="contact" className="relative overflow-hidden py-32 md:py-40">
-      <div className="glow absolute bottom-0 left-1/2 h-[420px] w-[700px] -translate-x-1/2 translate-y-1/3 blur-2xl" aria-hidden="true" />
+      <Metaball className="opacity-40" />
 
       <div className="relative mx-auto w-full max-w-4xl px-6 text-center md:px-10">
         <Reveal>
