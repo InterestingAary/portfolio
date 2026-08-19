@@ -121,11 +121,14 @@ export default function Hero() {
     offset: ["start start", "end end"],
   });
 
-  // Act 1 -> 2: "whoami" pulls up and out, "I build with it." takes over
+  // Act 1 -> 2: "whoami" pulls up and out, "I build with it." takes over.
+  // Travel distances are capped with real clearance so the lines never
+  // touch their neighbors: line one has ~24px above it (-> -14 keeps 10px),
+  // line two has ~32px below it (-> +16 keeps 16px).
   const act1Op = useTransform(scrollYProgress, [0.14, 0.3], [1, 0]);
-  const act1Y = useTransform(scrollYProgress, [0.14, 0.3], [0, -60]);
+  const act1Y = useTransform(scrollYProgress, [0.14, 0.3], [0, -14]);
   const act2Op = useTransform(scrollYProgress, [0.18, 0.34], [0, 1]);
-  const act2Y = useTransform(scrollYProgress, [0.18, 0.34], [44, 0]);
+  const act2Y = useTransform(scrollYProgress, [0.18, 0.34], [16, 0]);
 
   // Act 3: tagline + highlights rise in
   const tagOp = useTransform(scrollYProgress, [0.4, 0.56], [0, 1]);
