@@ -1,17 +1,17 @@
-﻿import { useRef } from "react";
+import { useRef } from "react";
 import { useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
 import { LinkedInIcon } from "./icons";
 import { profile } from "../data/profile";
 
 const TITLE = "STITCHED BY HAND";
 const STATEMENT =
-  "Every project here was stitched from experiments, late nights, and builds that didn't make it â€” then shipped anyway.";
+  "Every project here was stitched from experiments, late nights, and builds that didn't make the cut — yet it shipped.";
 
 const TITLE_WORDS = TITLE.split(" ");
 const STATEMENT_WORDS = STATEMENT.split(" ");
 const ALL_WORDS = [...TITLE_WORDS, ...STATEMENT_WORDS];
 
-const CHIPS = ["GSA 2026", "Srujana â€” 1st Place", "B.Tech CCE"];
+const CHIPS = ["GSA 2026", "Srujana — 1st Place", "B.Tech CCE"];
 
 const DOT_POSITIONS = [
   { x: 28, y: 40 },
