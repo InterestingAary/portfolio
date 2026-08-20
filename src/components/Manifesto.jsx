@@ -38,14 +38,14 @@ export default function Manifesto() {
     <section
       ref={ref}
       id="manifesto"
-      className="relative overflow-hidden"
-      style={reduce ? undefined : { height: "150vh" }}
+      className="relative"
+      style={reduce ? undefined : { height: "130vh" }}
     >
       <div
         className={
           reduce
             ? "relative flex min-h-[60vh] items-center py-24"
-            : "relative flex items-center px-6 md:sticky md:top-0 md:h-screen"
+            : "sticky top-0 flex h-svh items-center px-6"
         }
       >
         <div className="mx-auto w-full max-w-5xl">

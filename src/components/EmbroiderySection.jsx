@@ -1,17 +1,17 @@
-import { useRef } from "react";
+﻿import { useRef } from "react";
 import { useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
 import { LinkedInIcon } from "./icons";
 import { profile } from "../data/profile";
 
 const TITLE = "STITCHED BY HAND";
 const STATEMENT =
-  "Every project here was stitched from experiments, late nights, and builds that didn't make it — then shipped anyway.";
+  "Every project here was stitched from experiments, late nights, and builds that didn't make it â€” then shipped anyway.";
 
 const TITLE_WORDS = TITLE.split(" ");
 const STATEMENT_WORDS = STATEMENT.split(" ");
 const ALL_WORDS = [...TITLE_WORDS, ...STATEMENT_WORDS];
 
-const CHIPS = ["GSA 2026", "Srujana — 1st Place", "B.Tech CCE"];
+const CHIPS = ["GSA 2026", "Srujana â€” 1st Place", "B.Tech CCE"];
 
 const DOT_POSITIONS = [
   { x: 28, y: 40 },
@@ -62,11 +62,11 @@ export default function EmbroiderySection() {
       el.style.opacity = `${0.35 + wp * 0.65}`;
     });
 
-    if (threadRef.current && threadRef.current.__len) {
-      threadRef.current.style.strokeDashoffset = `${threadRef.current.__len * (1 - p)}`;
+if (threadRef.current && threadRef.current.__path) {
+      threadRef.current.__path.style.strokeDashoffset = `${threadRef.current.__len * (1 - p)}`;
     }
-    if (stitchLineRef.current && stitchLineRef.current.__len) {
-      stitchLineRef.current.style.strokeDashoffset = `${stitchLineRef.current.__len * (1 - p)}`;
+    if (stitchLineRef.current && stitchLineRef.current.__line) {
+      stitchLineRef.current.__line.style.strokeDashoffset = `${stitchLineRef.current.__len * (1 - p)}`;
     }
     if (needleRef.current) {
       needleRef.current.style.top = `${p * 372}px`;
@@ -101,15 +101,15 @@ export default function EmbroiderySection() {
   return (
     <section
       ref={ref}
-      id="embroidery-section"
-      className="relative overflow-hidden"
-      style={reduce ? undefined : { height: "220vh" }}
+id="embroidery-section"
+      className="relative"
+      style={reduce ? undefined : { height: "190vh" }}
     >
       <div
         className={
           reduce
             ? "relative flex min-h-[70vh] items-center py-24"
-            : "relative flex items-center px-6 md:sticky md:top-0 md:h-screen"
+            : "sticky top-0 flex h-svh items-center px-6"
         }
       >
         <div className="mx-auto grid w-full max-w-5xl items-center gap-14 md:grid-cols-[200px_1fr]">
@@ -126,12 +126,13 @@ export default function EmbroiderySection() {
               />
             </svg>
             <svg
-              ref={(el) => {
+ref={(el) => {
                 threadRef.current = el;
                 if (el && !reduce) {
                   const path = el.querySelector("path");
+                  el.__path = path;
                   el.__len = path ? path.getTotalLength() : 0;
-                  el.style.strokeDashoffset = `${el.__len}`;
+                  if (path) path.style.strokeDashoffset = `${el.__len}`;
                 }
               }}
               className="embroidery-section-drawn absolute inset-0"
@@ -219,15 +220,16 @@ export default function EmbroiderySection() {
             </p>
 
             <svg
-              ref={(el) => {
+ref={(el) => {
                 stitchLineRef.current = el;
                 if (el && !reduce) {
                   const line = el.querySelector("line");
+                  el.__line = line;
                   el.__len = line ? line.getTotalLength() : 0;
-                  el.style.strokeDashoffset = `${el.__len}`;
+                  if (line) line.style.strokeDashoffset = `${el.__len}`;
                 }
               }}
-              className="mt-4 hidden w-full max-w-xl md:block"
+              className="mt-4 w-full max-w-xl"
               height="10"
               viewBox="0 0 600 10"
               preserveAspectRatio="none"
