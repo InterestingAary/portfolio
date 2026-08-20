@@ -20,6 +20,18 @@
     scroll-padding-top: 5.5rem;
     scrollbar-color: #2a2a33 #0a0a0e;
     scrollbar-width: thin;
+    /* Pinned/parallax sections transform children past the viewport edge;
+       clip them so the page can never scroll sideways. `clip` (not `hidden`)
+       keeps position:sticky working. */
+    overflow-x: clip;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: #f4f4f5;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
   }
 
   ::-webkit-scrollbar {

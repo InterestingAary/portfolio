@@ -118,7 +118,11 @@ export default function Hero() {
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
-    offset: ["start start", "end end"],
+    // "start start"/"end end" mapped to %-form so framer-motion v13
+    // falls back to JS measurement instead of the CSS ViewTimeline
+    // "contain" range, which inverts for targets taller than the
+    // viewport and pins wrong styles at rest.
+    offset: ["start 0%", "end 100%"],
   });
 
   // Act 2: "I build with it." rolls in over the same slot and STAYS

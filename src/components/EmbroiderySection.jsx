@@ -43,7 +43,7 @@ export default function EmbroiderySection() {
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end end"],
+    offset: ["start 0%", "end 100%"],
   });
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {

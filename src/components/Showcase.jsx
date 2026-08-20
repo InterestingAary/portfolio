@@ -301,7 +301,7 @@ export default function Showcase({ onExplore, onCaseStudy }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end end"],
+    offset: ["start 0%", "end 100%"],
   });
 
   const perSlide = slides.map((_, i) => {
