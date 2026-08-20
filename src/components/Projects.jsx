@@ -219,7 +219,7 @@ export default function Projects({ onOpenProject, onExploreProject }) {
 
         <ExploreDeck projects={projects} onExplore={onExploreProject} />
 
-        <GroupHeader label="SHIPPED" note="live, deployed, or competition-winning" dotClass="bg-emerald-400" />
+        <GroupHeader label="SHIPPED" note="live, deployed, or competition winners" dotClass="bg-emerald-400" />
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           {shipped.map((p, i) => (
             <ParallaxItem

@@ -358,12 +358,16 @@ export default function Showcase({ onExplore, onCaseStudy }) {
   };
 
   return (
-    <section ref={ref} id="showcase" className="relative" style={{ height: reduce ? undefined : `${SLIDE_COUNT * 100}vh` }}>
+    <section
+      ref={ref}
+      id="showcase"
+      className={`relative ${reduce ? "" : "h-[300vh] max-md:h-auto"}`}
+    >
       <div
         className={
           reduce
             ? "relative overflow-hidden py-6"
-            : "sticky top-0 flex h-svh items-center overflow-hidden"
+            : "sticky top-0 flex h-svh items-center overflow-hidden max-md:static max-md:h-auto max-md:items-stretch max-md:overflow-visible"
         }
       >
         {reduce ? (
