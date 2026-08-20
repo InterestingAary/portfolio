@@ -121,27 +121,27 @@ export default function Hero() {
     offset: ["start start", "end end"],
   });
 
-  // Act 1 -> 2: "whoami" pulls up and out, "I build with it." takes over.
-  // Travel distances are capped with real clearance so the lines never
-  // touch their neighbors: line one has ~24px above it (-> -14 keeps 10px),
-  // line two has ~32px below it (-> +16 keeps 16px).
-  const act1Op = useTransform(scrollYProgress, [0.14, 0.3], [1, 0]);
-  const act1Y = useTransform(scrollYProgress, [0.14, 0.3], [0, -14]);
-  const act2Op = useTransform(scrollYProgress, [0.18, 0.34], [0, 1]);
-  const act2Y = useTransform(scrollYProgress, [0.18, 0.34], [16, 0]);
+  // Act 1: "whoami" block pulls up and out, fully gone before the next line.
+  // Act 2: "I build with it." rolls in over the same slot, then fades out.
+  // Act 3: tagline + highlights rise in after it is fully gone.
+  // Acts never overlap: each line fades completely before the next arrives.
+  const act1Op = useTransform(scrollYProgress, [0.12, 0.24], [1, 0]);
+  const act1Y = useTransform(scrollYProgress, [0.12, 0.24], [0, -14]);
+  const act2Op = useTransform(scrollYProgress, [0.26, 0.38, 0.4, 0.5], [0, 1, 1, 0]);
+  const act2Y = useTransform(scrollYProgress, [0.26, 0.38], [20, 0]);
 
-  // Act 3: tagline + highlights rise in
-  const tagOp = useTransform(scrollYProgress, [0.4, 0.56], [0, 1]);
-  const tagY = useTransform(scrollYProgress, [0.4, 0.56], [32, 0]);
+  // Act 3: tagline + highlights rise in, stay, then ride out with the stage exit.
+  const tagOp = useTransform(scrollYProgress, [0.5, 0.64, 0.88, 1], [0, 1, 1, 0]);
+  const tagY = useTransform(scrollYProgress, [0.5, 0.64], [32, 0]);
 
   // Act 4: floating cards sweep in, CTAs rise
-  const cardsOp = useTransform(scrollYProgress, [0.6, 0.76], [0, 1]);
-  const cardsX = useTransform(scrollYProgress, [0.6, 0.76], [90, 0]);
-  const ctaOp = useTransform(scrollYProgress, [0.6, 0.78], [0, 1]);
-  const ctaY = useTransform(scrollYProgress, [0.6, 0.78], [24, 0]);
+  const cardsOp = useTransform(scrollYProgress, [0.68, 0.82], [0, 1]);
+  const cardsX = useTransform(scrollYProgress, [0.68, 0.82], [90, 0]);
+  const ctaOp = useTransform(scrollYProgress, [0.68, 0.84], [0, 1]);
+  const ctaY = useTransform(scrollYProgress, [0.68, 0.84], [24, 0]);
 
   // Ambient reactions while scrolling
-  const blobScale = useTransform(scrollYProgress, [0.18, 0.5], [1, 1.35]);
+  const blobScale = useTransform(scrollYProgress, [0.3, 0.55], [1, 1.35]);
 
   // Exit: the whole stage tilts and zooms out as it releases the pin
   const gridY = useTransform(scrollYProgress, [0, 1], [0, -30]);
@@ -198,20 +198,23 @@ export default function Hero() {
         >
           <motion.div variants={container} initial={reduce ? false : "hidden"} animate="show">
             <motion.div
+              variants={item}
               style={reduce ? undefined : { opacity: act1Op, y: act1Y }}
-              className="origin-top"
             >
-              <motion.div variants={item}>
-                <span className="inline-flex items-center gap-2 rounded-full border border-edge bg-panel px-3.5 py-1.5 text-xs text-zinc-400">
-                  <span className="relative flex h-2 w-2" aria-hidden="true">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-                  </span>
-                  {profile.status}
+              <span className="inline-flex items-center gap-2 rounded-full border border-edge bg-panel px-3.5 py-1.5 text-xs text-zinc-400">
+                <span className="relative flex h-2 w-2" aria-hidden="true">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
                 </span>
-              </motion.div>
+                {profile.status}
+              </span>
+            </motion.div>
 
-              <motion.div variants={item} className="mt-8 flex items-center gap-3">
+            <motion.div
+              variants={item}
+              style={reduce ? undefined : { opacity: act1Op, y: act1Y }}
+              className="mt-8 flex items-center gap-3"
+            >
                 <span className="h-px w-8 bg-accent/50" aria-hidden="true" />
                 <p className="font-mono text-sm text-zinc-400">
                   <span className="text-accent">$</span> whoami
@@ -219,7 +222,7 @@ export default function Hero() {
                 </p>
               </motion.div>
 
-              <h1 className="mt-6 font-display font-bold leading-[0.98] tracking-tight">
+              <h1 className="relative mt-6 font-display font-bold leading-[0.98] tracking-tight">
                 <motion.span
                   style={reduce ? undefined : { opacity: act1Op, y: act1Y }}
                   className="block text-[clamp(2.2rem,5.8vw,4.25rem)] text-zinc-100"
@@ -237,7 +240,7 @@ export default function Hero() {
                 </motion.span>
                 <motion.span
                   style={reduce ? undefined : { opacity: act2Op, y: act2Y }}
-                  className="block text-[clamp(2.2rem,5.8vw,4.25rem)]"
+                  className="absolute inset-x-0 top-0 block text-[clamp(2.2rem,5.8vw,4.25rem)]"
                 >
                   {lineTwo.map((w, i) => (
                     <Fragment key={`${w}-${i}`}>
@@ -251,7 +254,6 @@ export default function Hero() {
                   ))}
                 </motion.span>
               </h1>
-            </motion.div>
 
             <motion.div style={reduce ? undefined : { opacity: tagOp, y: tagY }}>
               <motion.p variants={item} className="mt-8 max-w-xl text-lg font-medium text-zinc-200 md:text-xl">
