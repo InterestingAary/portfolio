@@ -183,7 +183,7 @@ export default function Hero() {
         className={
           reduce
             ? "relative flex min-h-screen items-center overflow-hidden"
-            : "relative flex min-h-screen items-center overflow-hidden md:sticky md:top-0 md:h-screen"
+            : "sticky top-0 flex h-svh items-center overflow-hidden"
         }
         onMouseMove={onMouseMove}
       >

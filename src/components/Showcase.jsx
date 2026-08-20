@@ -363,7 +363,7 @@ export default function Showcase({ onExplore, onCaseStudy }) {
         className={
           reduce
             ? "relative overflow-hidden py-6"
-            : "relative overflow-hidden md:sticky md:top-0 md:flex md:h-screen md:items-center"
+            : "sticky top-0 flex h-svh items-center overflow-hidden"
         }
       >
         {reduce ? (
