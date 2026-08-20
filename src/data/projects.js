@@ -18,9 +18,9 @@ export const projects = [
     oneLiner: "Hackathon-winning rural safety & assistance platform for farmers and fishermen.",
     accent: "#5b9dff",
     glyph: "RG",
-    // Live demo embedded in the card — a screenshot is not needed.
+    // Screenshot of the built HTML interface, shown in place of a live embed
+    // so the demo page doesn't run (and drain performance) inside the card.
     image: "assets/projects/rural-guards.png",
-    embed: "demos/rural-guards/index.html",
     achievement: "1st Place — Open Innovation · Srujana 2026",
 
     overview:
@@ -85,9 +85,9 @@ links: {
     oneLiner: "A personalized, shareable birthday web experience built as my first publicly deployed website.",
     accent: "#7aa7f7",
     glyph: "BW",
-    // Live demo embedded in the card — a screenshot is not needed.
+    // Screenshot of the built HTML interface, shown in place of a live embed
+    // so the demo page doesn't run (and drain performance) inside the card.
     image: "assets/projects/birthday-wishes.png",
-    embed: "demos/birthday-wishes/index.html",
     milestone: "First public deployment",
 
     overview:

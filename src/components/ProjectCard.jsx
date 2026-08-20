@@ -12,7 +12,6 @@ function ProjectVisual({ project, featured }) {
   }, [project.id]);
 
   const showImage = project.image && !imageFailed;
-  const showEmbed = Boolean(project.embed);
 
   return (
     <div className={`relative overflow-hidden ${height}`}>
@@ -23,25 +22,15 @@ function ProjectVisual({ project, featured }) {
           background: `radial-gradient(120% 140% at 15% 0%, ${project.accent}26 0%, transparent 55%), linear-gradient(180deg, var(--color-panel) 0%, var(--color-ink) 100%)`,
         }}
       />
-      {showEmbed && (
-        <iframe
-          src={project.embed}
-          title={`${project.name} — live demo`}
-          allow="geolocation; microphone; autoplay; clipboard-write; fullscreen"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals"
-          className="absolute inset-0 z-20 h-full w-full border-0 bg-panel"
-        />
-      )}
-      {!showEmbed && showImage && (
+      {showImage ? (
         <img
           src={project.image}
           alt={`${project.name} — project screenshot`}
           loading="lazy"
           onError={() => setImageFailed(true)}
-          className="absolute inset-0 h-full w-full object-cover object-top transition-all duration-500 group-hover:scale-[1.03] group-hover:brightness-110"
+          className="absolute inset-0 z-20 h-full w-full object-cover object-top transition-all duration-500 group-hover:scale-[1.03] group-hover:brightness-110"
         />
-      )}
-      {!showEmbed && !showImage && (
+      ) : (
         <div className="relative flex h-full w-full flex-col">
           {/* browser-chrome style frame to suggest a screenshot slot */}
           <div className="flex items-center gap-1.5 border-b border-edge/60 px-4 py-2.5">

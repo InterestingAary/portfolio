@@ -66,10 +66,10 @@ export default function FullscreenViewer({ project, projects, onClose, onNavigat
 
             <div className="hidden items-center gap-2 md:flex">
               <span className="rounded-full border border-accent/40 bg-accent/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-accent">
-                HTML file only
+                interface preview
               </span>
               <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">
-                interface preview — full product in the works
+                screenshot — full product in the works
               </span>
             </div>
 
@@ -92,12 +92,12 @@ export default function FullscreenViewer({ project, projects, onClose, onNavigat
               >
                 <ArrowRight className="h-4 w-4" />
               </button>
-              {project.embed && (
+              {project.links.demo && (
                 <a
-                  href={project.embed}
+                  href={project.links.demo}
                   target="_blank"
                   rel="noreferrer"
-                  aria-label={`${project.name} — open interface in a new tab`}
+                  aria-label={`${project.name} — open deployed site in a new tab`}
                   className={btnCls}
                 >
                   <ExternalLink className="h-4 w-4" />
@@ -116,14 +116,14 @@ export default function FullscreenViewer({ project, projects, onClose, onNavigat
             </div>
           </div>
 
-          {project.embed ? (
-            <iframe
-              src={project.embed}
-              title={`${project.name} — fullscreen interface preview`}
-              className="min-h-0 w-full flex-1 border-0 bg-panel"
-              sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals"
-              allow="geolocation; microphone; autoplay; clipboard-write; fullscreen"
-            />
+          {project.image ? (
+            <div className="relative min-h-0 flex-1 overflow-hidden bg-panel">
+              <img
+                src={project.image}
+                alt={`${project.name} — interface screenshot`}
+                className="h-full w-full object-cover object-top"
+              />
+            </div>
           ) : (
             <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden">
               <div className="grid-bg absolute inset-0" aria-hidden="true" />
@@ -161,7 +161,7 @@ export default function FullscreenViewer({ project, projects, onClose, onNavigat
               <ArrowRight className="h-3 w-3" aria-hidden="true" />
               drag the deck or use arrow keys to switch
             </span>
-            <span className="hidden text-accent sm:inline">html-only preview · fullscreen</span>
+            <span className="hidden text-accent sm:inline">interface preview · fullscreen</span>
           </div>
         </motion.div>
       )}

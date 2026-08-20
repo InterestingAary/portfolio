@@ -11,7 +11,8 @@ Live: **[https://interestingaary.github.io/portfolio/](https://interestingaary.g
 - **4 switchable themes** — `nebula`, `ocean`, `heavenly`, `hell` — with per-theme accent colors, textures, and decor (starfields, feathers, skulls, bubbles). Choice persists via `localStorage`.
 - **Immersive scroll experience** — Lenis smooth scrolling, parallax starfields, scroll-scrubbed sections (manifesto paint, embroidery thread down the left edge), and a fullscreen circular transition curtain between sections.
 - **Embroidery section** — a needle stitches a thread down the page as you scroll; text paints itself in word-by-word with a growing stitch line.
-- **Interactive sections** — Projects with modal + fullscreen live-demo viewer, GitHub-repo live cards, achievements, journey timeline, skills, code showcase (fetches your public GitHub repos), and contact.
+- **Ambient sound** — synthesized background music (zero audio assets), soft click on every press, and a gentle tick while scrolling; mute toggle in the navbar, persisted via `localStorage`.
+- **Interactive sections** — Projects with modal + fullscreen interface-preview viewer (screenshots, not live iframes), GitHub-repo live cards, achievements, journey timeline, skills, code showcase (fetches your public GitHub repos), and contact.
 - **Accessibility first** — reduced-motion mode renders every animation statically (verified), skip-to-content link, keyboard-usable menus/modals, semantic headings, contrast-aware per-theme colors.
 - **Security hardening** — strict Content-Security-Policy (production builds only), referrer policy, no third-party scripts or tracking.
 
@@ -48,7 +49,7 @@ npm run preview
 All personal content lives in **one place** — `src/data/`:
 
 - **`src/data/profile.js`** — name, role, tagline, bio, education, social links, creator channels. Empty links are hidden from the UI automatically.
-- **`src/data/projects.js`** — projects shown in the grid: title, description, tags, image (`public/assets/projects/`), links, and optional live-demo `embed` path (put demo builds in `public/demos/<name>/`).
+- **`src/data/projects.js`** — projects shown in the grid: title, description, tags, image (`public/assets/projects/`), and links. Shipped projects show a screenshot of their built HTML interface instead of a live iframe so the demo never runs (and drains performance) inside the card.
 - **`src/data/skills.js`** — skill groups, currently-learning list, DSA topics (also feeds the ticker marquee).
 - **`src/data/repos.js`** — fallback repo list for the code section when the GitHub API is rate-limited.
 
@@ -81,12 +82,11 @@ No manual steps — the workflow uses least-privilege permissions and `persist-c
 portfolio/
 ├── .github/workflows/deploy.yml   # Auto-deploy to GitHub Pages
 ├── public/
-│   ├── assets/                    # Project images, favicon
-│   └── demos/                     # Embedded live demos (iframe-safe, same-origin)
+│   └── assets/                    # Project screenshots, favicon
 ├── src/
 │   ├── components/                # All sections + decor + effects
 │   ├── data/                      # profile, projects, skills, repos
-│   ├── lib/                       # Easter eggs, helpers
+│   ├── lib/                       # Easter eggs, ambient sound engine
 │   ├── App.jsx                    # Layout, theme switching, nav wiring
 │   ├── main.jsx                   # Entry
 │   └── index.css                  # Design tokens, themes, keyframes

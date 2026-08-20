@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, Volume2, VolumeX, X } from "lucide-react";
 import { GitHubIcon } from "./icons";
 import { profile } from "../data/profile";
+import { setSoundEnabled, subscribeSound } from "../lib/sound";
 
 const links = [
   { label: "Work", href: "#work" },
@@ -17,6 +18,11 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("");
+  const [soundOn, setSoundOn] = useState(true);
+
+  useEffect(() => subscribeSound(setSoundOn), []);
+
+  const toggleSound = () => setSoundEnabled(!soundOn);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -129,6 +135,16 @@ export default function Navbar() {
               <GitHubIcon className="h-[18px] w-[18px]" />
             </a>
           )}
+          <button
+            type="button"
+            onClick={toggleSound}
+            aria-label={soundOn ? "Mute sounds" : "Enable sounds"}
+            aria-pressed={soundOn}
+            title={soundOn ? "Mute sounds" : "Enable sounds"}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-edge bg-panel/60 text-zinc-400 transition-colors hover:border-accent/50 hover:text-accent"
+          >
+            {soundOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+          </button>
         </div>
 
         <button
@@ -179,6 +195,16 @@ export default function Navbar() {
                   <GitHubIcon className="h-4 w-4" /> GitHub
                 </a>
               )}
+              <button
+                type="button"
+                onClick={toggleSound}
+                aria-label={soundOn ? "Mute sounds" : "Enable sounds"}
+                aria-pressed={soundOn}
+                className="mt-2 inline-flex items-center gap-2 rounded-lg px-3 py-3 text-sm text-zinc-400 transition-colors hover:text-accent"
+              >
+                {soundOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                {soundOn ? "Sound on" : "Sound off"}
+              </button>
             </div>
           </motion.div>
         )}

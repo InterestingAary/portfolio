@@ -35,6 +35,7 @@ import WhatIBuild from "./components/WhatIBuild";
 import { currentlyLearning, dsa, skillGroups } from "./data/skills";
 import { projects } from "./data/projects";
 import { setupEasterEggs } from "./lib/easterEggs";
+import { setupSounds } from "./lib/sound";
 
 const tickerItems = [
   ...skillGroups.flatMap((g) => g.items),
@@ -78,6 +79,7 @@ export default function App() {
 
   useEffect(() => {
     setupEasterEggs();
+    setupSounds();
   }, []);
 
   useEffect(() => {

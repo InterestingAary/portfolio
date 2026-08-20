@@ -157,7 +157,7 @@ function FullScreenSlide({ project, index, isLast, ms, onExplore, onCaseStudy })
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
-            {project.embed && (
+            {project.image && (
               <button type="button" onClick={() => onExplore(project)} className="btn-accent">
                 <Maximize2 className="h-4 w-4" aria-hidden="true" /> Open Interface
               </button>
@@ -268,7 +268,7 @@ function StackedFallback({ onExplore, onCaseStudy }) {
             </h4>
             <p className="mt-3 text-sm leading-relaxed text-zinc-400">{p.oneLiner}</p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              {p.embed && (
+              {p.image && (
                 <button type="button" onClick={() => onExplore(p)} className="btn-accent">
                   <Maximize2 className="h-4 w-4" aria-hidden="true" /> Open Interface
                 </button>
@@ -452,7 +452,7 @@ export default function Showcase({ onExplore, onCaseStudy }) {
                     </h4>
                     <p className="mt-3 text-sm leading-relaxed text-zinc-400">{p.oneLiner}</p>
                     <div className="mt-6 flex flex-wrap items-center gap-3">
-                      {p.embed && (
+                      {p.image && (
                         <button type="button" onClick={() => onExplore(p)} className="btn-accent">
                           <Maximize2 className="h-4 w-4" aria-hidden="true" /> Open Interface
                         </button>
