@@ -29,6 +29,8 @@ let nextNoteTime = 0;
 let schedulerId = null;
 let lastClickAt = 0;
 let lastTickAt = 0;
+let lastPopAt = 0;
+let wheelAccum = 0;
 const listeners = new Set();
 
 function readPref() {
@@ -169,20 +171,40 @@ function playClick() {
   osc.stop(t + 0.12);
 }
 
-function playTick() {
+function playTick(vel) {
   if (!ctx || !master) return;
   const t = ctx.currentTime;
+  const speed = Math.max(0, Math.min(1, vel || 0.4));
   const osc = ctx.createOscillator();
   osc.type = "sine";
-  osc.frequency.setValueAtTime(920, t);
-  osc.frequency.exponentialRampToValueAtTime(640, t + 0.05);
+  const start = 620 + speed * 420;
+  osc.frequency.setValueAtTime(start, t);
+  osc.frequency.exponentialRampToValueAtTime(start * 0.68, t + 0.05);
   const g = ctx.createGain();
-  g.gain.setValueAtTime(0.025, t);
+  const vol = 0.018 + speed * 0.03;
+  g.gain.setValueAtTime(vol, t);
   g.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
   osc.connect(g);
   g.connect(master);
   osc.start(t);
   osc.stop(t + 0.1);
+}
+
+function playPop() {
+  if (!ctx || !master) return;
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(430, t);
+  osc.frequency.exponentialRampToValueAtTime(780, t + 0.055);
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(0.055, t + 0.018);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.13);
+  osc.connect(g);
+  g.connect(master);
+  osc.start(t);
+  osc.stop(t + 0.15);
 }
 
 export function isSoundEnabled() {
@@ -229,17 +251,34 @@ export function setupSounds() {
     lastClickAt = now;
     playClick();
   };
-  const onScroll = () => {
+  const onWheel = (e) => {
     onGesture();
     if (!enabled) return;
     const now = performance.now();
-    if (now - lastTickAt < 150) return;
+    if (now - lastTickAt < 70) return;
+    wheelAccum += Math.abs(e.deltaY);
+    if (wheelAccum < 110) return;
+    wheelAccum = 0;
     lastTickAt = now;
-    playTick();
+    playTick(Math.min(1, Math.abs(e.deltaY) / 260));
+  };
+
+  // Gentle pop when the pointer lands on an interactive element. Throttled so
+  // sweeping across a menu reads as a soft shimmer instead of a machine-gun.
+  const onHover = (e) => {
+    if (e.pointerType === "touch") return;
+    const t = e.target;
+    if (!t || !(t instanceof Element)) return;
+    if (!t.closest("a, button, [role='button'], input, select, textarea, summary, [tabindex]")) return;
+    const now = performance.now();
+    if (now - lastPopAt < 90) return;
+    lastPopAt = now;
+    if (!enabled) return;
+    playPop();
   };
 
   window.addEventListener("pointerdown", onPointerDown, true);
   window.addEventListener("keydown", onGesture, true);
-  window.addEventListener("wheel", onScroll, { passive: true });
-  document.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("wheel", onWheel, { passive: true });
+  window.addEventListener("pointerover", onHover, true);
 }
