@@ -8,6 +8,10 @@ export const skillGroups = [
     title: "Web",
     items: ["HTML", "CSS", "JavaScript", "Node.js", "Express.js", "REST APIs"],
   },
+  {
+    title: "Game Engines",
+    items: ["Roblox Studio", "Unreal Engine (Basics)"],
+  },
   { title: "Tools", items: ["Git", "GitHub", "VS Code", "APIs", "Deployment"] },
 ];
 
