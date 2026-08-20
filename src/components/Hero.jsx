@@ -121,23 +121,22 @@ export default function Hero() {
     offset: ["start start", "end end"],
   });
 
-  // Act 1: "whoami" block pulls up and out, fully gone before the next line.
-  // Act 2: "I build with it." rolls in over the same slot, then fades out.
-  // Act 3: tagline + highlights rise in after it is fully gone.
-  // Acts never overlap: each line fades completely before the next arrives.
+  // Act 2: "I build with it." rolls in over the same slot and STAYS
+  // until the stage exit (0.88-1). Plateau keeps framer from decaying
+  // the value back to 0 after the range ends.
   const act1Op = useTransform(scrollYProgress, [0.12, 0.24], [1, 0]);
   const act1Y = useTransform(scrollYProgress, [0.12, 0.24], [0, -14]);
-  const act2Op = useTransform(scrollYProgress, [0.26, 0.38, 0.4, 0.5], [0, 1, 1, 0]);
+  const act2Op = useTransform(scrollYProgress, [0.26, 0.38, 0.88, 1], [0, 1, 1, 0]);
   const act2Y = useTransform(scrollYProgress, [0.26, 0.38], [20, 0]);
 
   // Act 3: tagline + highlights rise in, stay, then ride out with the stage exit.
   const tagOp = useTransform(scrollYProgress, [0.5, 0.64, 0.88, 1], [0, 1, 1, 0]);
   const tagY = useTransform(scrollYProgress, [0.5, 0.64], [32, 0]);
 
-  // Act 4: floating cards sweep in, CTAs rise
-  const cardsOp = useTransform(scrollYProgress, [0.68, 0.82], [0, 1]);
+  // Act 4: floating cards sweep in, CTAs rise (plateau until stage exit)
+  const cardsOp = useTransform(scrollYProgress, [0.68, 0.82, 0.88, 1], [0, 1, 1, 0]);
   const cardsX = useTransform(scrollYProgress, [0.68, 0.82], [90, 0]);
-  const ctaOp = useTransform(scrollYProgress, [0.68, 0.84], [0, 1]);
+  const ctaOp = useTransform(scrollYProgress, [0.68, 0.84, 0.88, 1], [0, 1, 1, 0]);
   const ctaY = useTransform(scrollYProgress, [0.68, 0.84], [24, 0]);
 
   // Ambient reactions while scrolling
