@@ -10,6 +10,75 @@
  */
 export const projects = [
   {
+    id: "dsaglazer",
+    name: "DSAglazzer",
+    shipped: true,
+    status: "live",
+    category: "Web",
+    oneLiner: "Spaced repetition DSA revision tracker — remember what you solve, revise on time.",
+    accent: "#14b8a6",
+    glyph: "DG",
+    // Screenshot of the shipped interface, shown in place of a live embed
+    // so the demo doesn't run (and drain performance) inside the card.
+    image: "assets/projects/dsaglazer.png",
+    milestone: "Latest shipped · PWA + Extension",
+
+    overview:
+      "DSAglazzer is an offline-first DSA revision tracker built with React 19 + Vite + Tailwind CSS v4. Every solved problem is scheduled through spaced repetition (Day 3 → Day 7 → Day 30 — fully customizable) so you revisit patterns at the exact moment you'd otherwise forget them. It includes a 365-day GitHub-style heatmap, streaks, smart filters (topic, difficulty, platform, 23 algorithm tags), calendar with dots and agenda drawer, and analytics (Recharts). It's PWA-installable, supports dark/light themes, browser notifications, import/export, and a Chrome Extension (MV3) that auto-detects Accepted solves on LeetCode, GFG, Codeforces, CodeChef, and AtCoder.",
+
+    problem:
+      "Solving many DSA problems doesn't help if you forget the patterns — most revision trackers are manual spreadsheets or lack timing logic, so hard-earned patterns fade before interviews.",
+
+    solution:
+      "Automate the revision schedule: log a solve once, let the spaced repetition engine surface it on Day 3, 7, and 30 (or your own intervals), and give one-tap Complete / Skip / Overdue flows with a Today's Revision queue that keeps you honest.",
+
+    features: [
+      "Spaced repetition engine (3/7/30 defaults, editable 1–365 days)",
+      "Offline-first — 100% LocalStorage, PWA installable",
+      "365-day GitHub-style heatmap (teal scale) + smart daily streak",
+      "Full CRUD & smart filters (topic/difficulty/platform/23 tags/favourites)",
+      "Calendar month view with overdue/due/upcoming dots + agenda drawer",
+      "Analytics — Recharts difficulty donut + top topics + completion rate",
+      "Portfolio-grade UI — Inter + Space Grotesk + Instrument Serif, grain + dot-grid + Lenis + Reveal",
+      "Dark/Light token themes, notifications, import/export JSON",
+      "Chrome Extension (MV3) auto-detects Accepted solves on 5 platforms",
+    ],
+
+    technologies: [
+      "React 19",
+      "TypeScript",
+      "Vite 8",
+      "Tailwind CSS 4",
+      "Framer Motion 13",
+      "Lenis",
+      "Recharts",
+      "React Router 7",
+      "PWA (vite-plugin-pwa)",
+      "Vitest",
+      "Chrome Extension (MV3)",
+    ],
+
+    role: "Designed, built, and shipped solo — from spaced repetition logic and data model to UI, PWA, extension, tests (49), and CI/CD to GitHub Pages.",
+
+    challenges: [
+      "Tuning spaced repetition intervals so they feel helpful rather than noisy",
+      "Building a Chrome Extension that reliably detects Accepted on 5 different sites",
+      "Keeping an offline-first LocalStorage + PWA app fast and consistent across views",
+    ],
+
+    learned: [
+      "How spaced repetition and active recall actually improve retention for DSA",
+      "Shipping a full PWA with installability, theming, and offline caching",
+      "End-to-end CI/CD with GitHub Actions to Pages and keeping a polished portfolio-grade UI consistent",
+    ],
+
+    links: {
+      demo: "https://interestingaary.github.io/DSAglazzer/",
+      github: "https://github.com/InterestingAary/DSAglazzer",
+    },
+  },
+
+  {
     id: "rural-guards",
     name: "Rural Guards",
     shipped: true,

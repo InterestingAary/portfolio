@@ -3,10 +3,10 @@
  * Problem Solving section: add platform URLs and topics you've actually practiced.
  */
 export const skillGroups = [
-  { title: "Programming", items: ["C", "C++", "JavaScript", "Python"] },
+  { title: "Programming", items: ["C", "C++", "JavaScript", "TypeScript", "Python"] },
   {
     title: "Web",
-    items: ["HTML", "CSS", "JavaScript", "Node.js", "Express.js", "REST APIs"],
+    items: ["HTML", "CSS", "JavaScript", "TypeScript", "React", "Vite", "Tailwind CSS", "Node.js", "Express.js", "REST APIs", "PWA"],
   },
   {
     title: "Game Engines",
@@ -31,7 +31,5 @@ export const dsa = {
     { name: "NeetCode", url: "https://neetcode.io/user/GrandLuxray263" },
   ],
   // Only list topics you have actually practiced.
-  // Suggested once filled in: Arrays, Strings, Hash Maps, Two Pointers,
-  // Sliding Window, Stacks, Binary Search, Linked Lists, Trees, Graphs, DP
-  topics: [],
+  topics: ["Arrays", "Strings", "Hash Maps", "Linked Lists"],
 };

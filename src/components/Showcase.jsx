@@ -14,9 +14,9 @@ const SLIDE_COUNT = 3;
 
 // One featured project per full-screen slide + the "what's next" closer.
 const slides = [
-  { project: projects[0], chapter: "SHIPPED & LIVE" }, // Rural Guards
-  { project: projects[2], chapter: "IN DEVELOPMENT" }, // Muzilo
-  { project: null, chapter: "WHAT'S NEXT" }, // OmniTriage / Gym Training / closer
+  { project: projects[0], chapter: "SHIPPED & LIVE" }, // DSAglazzer
+  { project: projects[3], chapter: "IN DEVELOPMENT" }, // Muzilo
+  { project: null, chapter: "WHAT'S NEXT" }, // Remaining projects / closer
 ];
 
 // Chapter rail labels — fromfauna's "#special_menu" chapter list.
@@ -180,7 +180,7 @@ function FullScreenSlide({ project, index, isLast, ms, onExplore, onCaseStudy })
 }
 
 function NextSlide({ ms, index }) {
-  const nextProjects = [projects[3], projects[4], projects[1]]; // OmniTriage, Gym Training, Birthday Wishes
+  const nextProjects = [projects[1], projects[2], projects[4], projects[5]]; // Rural Guards, Birthday Wishes, OmniTriage, Gym Training
   // Identity function transforms — see FullScreenSlide for why (framer must
   // not compile these into WAAPI ViewTimeline animations).
   const opacity = useTransform(ms.opacity, (v) => v);
