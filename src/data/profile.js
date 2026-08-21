@@ -11,13 +11,13 @@ export const profile = {
   role: "Developer • Builder • Creator",
 
   tagline:
-    "B.Tech CCE student exploring software development, game development, AI, cybersecurity, and problem solving — turning ideas into working projects.",
+    "B.Tech CCE student shipping offline-first tools & game experiments — recently shipped DSAglazzer (React 19 + TypeScript + PWA + Extension) to 3 live projects.",
 
-  status: "Currently building",
+  status: "Recently shipped DSAglazzer",
 
   bio: [
     "I'm a B.Tech CCE student who enjoys taking ideas from \"what if?\" to something that actually works. I learn by building — and that's led me into web development, game development, AI, cybersecurity, and DSA, plus hackathons and plenty of experiments along the way.",
-    "I recently started shipping publicly deployed projects, and I'm keeping that momentum going — working through data structures and algorithms, exploring game development, and experimenting with AI as I go.",
+    "I now have 3 shipped projects (DSAglazzer, Rural Guards, Birthday Wishes) and I'm keeping momentum — iterating on DSAglazzer's spaced repetition engine, practicing DSA daily (Arrays, Strings, Hash Maps, Linked Lists), exploring Roblox Studio & Unreal Engine, and experimenting with AI-assisted development.",
   ],
 
   education: "B.Tech — Computer & Communication Engineering",
